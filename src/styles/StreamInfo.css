@@ -1,0 +1,28 @@
+.follow-btn {
+    background-color: #4299e1;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  /* Hover effect */
+  .follow-btn:hover {
+    background-color: #3182ce;
+    transform: scale(1.05);
+  }
+  
+  /* "Following" */
+  .follow-btn.following {
+    background-color: #48bb78;
+    color: white;
+  }
+  
+  .follow-btn.following:hover {
+    background-color: #38a169;
+  }
+  

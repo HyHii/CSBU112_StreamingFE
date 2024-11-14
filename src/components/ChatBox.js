@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./../styles/ChatBox.css";
 
 const ChatBox = () => {
   const [messages, setMessages] = useState([]);
@@ -19,9 +20,9 @@ const ChatBox = () => {
           messages.map((msg, index) => (
             <div
               key={index}
-              className={`mb-2 p-2 rounded-lg ${
-                msg.sender === "You" ? "bg-blue-500 text-white" : "bg-gray-600"
-              }`}
+              className={`chatbox-message ${
+                msg.sender === "You" ? "user" : "other"
+              } mb-2 p-2 rounded-lg`}
             >
               <strong>{msg.sender}:</strong> {msg.text}
             </div>
