@@ -1,7 +1,7 @@
 import React from "react";
-import Navbar from "./Navbar";
-import VideoPlayer from "./VideoPlayer";
-import ChatBox from "./ChatBox";
+import Navbar from "./components/Navbar";
+import VideoPlayer from "./components/VideoPlayer";
+import ChatBox from "./components/ChatBox";
 
 const App = () => {
   return (
