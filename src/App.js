@@ -1,7 +1,7 @@
 import React from "react";
-import Navbar from './Navbar';
+import Navbar from "./Navbar";
 import VideoPlayer from "./VideoPlayer";
-import VideoList from "./VideoList";
+import ChatBox from "./ChatBox";
 
 const App = () => {
   return (
@@ -13,7 +13,7 @@ const App = () => {
             <VideoPlayer />
           </div>
           <div>
-            <VideoList />
+            <ChatBox /> {}
           </div>
         </div>
       </div>
