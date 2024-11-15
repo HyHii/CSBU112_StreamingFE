@@ -1,11 +1,3 @@
-.chatbox-message.user {
-    background-color: #3b82f6;
-    color: #ffffff;
-  }
-  .chatbox-message.other {
-    background-color: #4b5563;
-    color: #e5e7eb;
-  }
   .chatbox-message {
     animation: fadeIn 0.3s ease-in-out;
   }

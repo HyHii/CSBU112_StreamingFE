@@ -25,16 +25,14 @@ const ChatBox = () => {
   }, [messages]);
 
   return (
-    <div className="bg-gray-800 rounded-lg p-4 h-full flex flex-col w-[400px] h-[600px]">
+    <div className="bg-gray-800 rounded-lg p-4 flex flex-col w-[400px] h-[600px]">
       <h2 className="text-lg font-semibold mb-4">Live Chat</h2>
-      <div className="flex-grow overflow-y-auto bg-gray-700 p-2 rounded-lg mb-4">
+      <div className="grow overflow-y-auto overflow-x-clip bg-gray-9pi00 p-2 rounded-lg mb-4">
         {messages.length > 0 ? (
           messages.map((msg, index) => (
             <div
               key={index}
-              className={`chatbox-message ${
-                msg.sender === "You" ? "user" : "other"
-              } mb-2 p-2 rounded-lg`}
+              className={`chatbox-message mb-2 p-2 rounded-lg ` }
             >
               <strong>{msg.sender}:</strong> {msg.text}
             </div>
