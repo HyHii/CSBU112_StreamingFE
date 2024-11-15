@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { PaperAirplaneIcon } from "@heroicons/react/outline";
 
 const ChatBox = () => {
   const [messages, setMessages] = useState([]); // Danh sách tin nhắn
@@ -64,7 +63,21 @@ const ChatBox = () => {
           className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition flex items-center justify-center"
           onClick={handleSend}
         >
-          <PaperAirplaneIcon className="h-5 w-5 rotate-90" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="h-5 w-5"
+            style={{ transform: "rotate(180deg)" }} // Xoay ngược 180 độ
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M2 12l19-10-5 10 5 10-19-10z"
+            />
+          </svg>
         </button>
       </div>
     </div>
