@@ -1,26 +1,30 @@
 import React, { useState, useRef, useEffect } from "react";
+import { PaperAirplaneIcon } from "@heroicons/react/outline";
 
 const ChatBox = () => {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
-  const messagesEndRef = useRef(null);
+  const [messages, setMessages] = useState([]); // Danh sách tin nhắn
+  const [input, setInput] = useState(""); // Nội dung nhập
+  const messagesEndRef = useRef(null); // Tham chiếu đến cuối danh sách tin nhắn
 
   const handleSend = () => {
     if (input.trim()) {
       setMessages([...messages, { text: input, sender: "You" }]);
-      setInput("");
+      setInput(""); // Xóa nội dung nhập
     }
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      handleSend();
-    }
-  };
-
+  // Cuộn xuống cuối khi danh sách tin nhắn thay đổi
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Hàm xử lý khi nhấn phím Enter
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Ngăn textarea xuống dòng khi nhấn Enter
+      handleSend();
+    }
+  };
 
   return (
     <div className="bg-gray-850 rounded-2xl flex flex-col w-[400px] h-[600px] shadow-lg overflow-hidden">
@@ -28,14 +32,15 @@ const ChatBox = () => {
       <h2 className="text-lg font-semibold mb-4 text-center text-white py-2 border-b border-gray-700">
         Live Chat
       </h2>
-      
+
       {/* Khung hiển thị tin nhắn */}
-      <div className="flex-grow overflow-y-auto p-4 bg-gray-850">
+      <div className="flex-grow overflow-y-auto bg-gray-850 p-2 rounded-lg mb-4">
         {messages.length > 0 ? (
           messages.map((msg, index) => (
             <div
               key={index}
               className="text-white mb-2"
+              style={{ wordBreak: "break-word" }} // Thêm thuộc tính để ngắt dòng
             >
               <strong>{msg.sender}:</strong> {msg.text}
             </div>
@@ -48,19 +53,18 @@ const ChatBox = () => {
 
       {/* Khung nhập liệu */}
       <div className="bg-gray-850 p-3 border-t border-gray-700 flex items-center gap-2">
-        <input
-          type="text"
-          className="flex-grow p-3 rounded-full bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+        <textarea
+          className="flex-grow p-2 rounded-l-lg bg-gray-700 text-white resize-none h-12"
           placeholder="Type your message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
+          onKeyDown={handleKeyDown} // Nhấn Enter để gửi
         />
         <button
-          className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition"
+          className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition flex items-center justify-center"
           onClick={handleSend}
         >
-          Send
+          <PaperAirplaneIcon className="h-5 w-5 rotate-90" />
         </button>
       </div>
     </div>
