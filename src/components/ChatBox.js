@@ -7,11 +7,21 @@ const ChatBox = () => {
 
   const handleSend = () => {
     if (input.trim()) {
-      setMessages([...messages, { text: input, sender: "You" }]);
+      const timeSent = new Date().toLocaleTimeString(); // Lấy thời gian hiện tại
+      setMessages([...messages, { text: input, sender: "You", time: timeSent }]);
       setInput(""); // Xóa nội dung nhập
     }
   };
 
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      // Kiểm tra người dùng có đang cuộn lên không
+      if (messagesEndRef.current.scrollHeight === messagesEndRef.current.scrollTop + messagesEndRef.current.clientHeight) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [messages]);
   // Cuộn xuống cuối khi danh sách tin nhắn thay đổi
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -19,11 +29,12 @@ const ChatBox = () => {
 
   // Hàm xử lý khi nhấn phím Enter
   const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault(); // Ngăn textarea xuống dòng khi nhấn Enter
-      handleSend();
+    if (event.key === "Enter" && input.trim()) {
+      event.preventDefault(); // Ngừng textarea xuống dòng
+      handleSend(); // Gửi tin nhắn
     }
   };
+
 
   return (
     <div className="bg-gray-850 rounded-2xl flex flex-col w-[400px] h-[600px] shadow-lg overflow-hidden">
@@ -36,12 +47,9 @@ const ChatBox = () => {
       <div className="flex-grow overflow-y-auto bg-gray-850 p-2 rounded-lg mb-4">
         {messages.length > 0 ? (
           messages.map((msg, index) => (
-            <div
-              key={index}
-              className="text-white mb-2"
-              style={{ wordBreak: "break-word" }} // Thêm thuộc tính để ngắt dòng
-            >
+            <div key={index} className="text-white mb-2" style={{ wordBreak: "break-word" }}>
               <strong>{msg.sender}:</strong> {msg.text}
+              <span className="text-gray-400 text-sm ml-2">({msg.time})</span> {/* Hiển thị thời gian */}
             </div>
           ))
         ) : (
@@ -49,6 +57,7 @@ const ChatBox = () => {
         )}
         <div ref={messagesEndRef}></div>
       </div>
+
 
       {/* Khung nhập liệu */}
       <div className="bg-gray-850 p-3 border-t border-gray-700 flex items-center gap-2">
@@ -60,7 +69,7 @@ const ChatBox = () => {
           onKeyDown={handleKeyDown} // Nhấn Enter để gửi
         />
         <button
-          className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition flex items-center justify-center"
+          className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition flex items-center justify-center"
           onClick={handleSend}
         >
           <svg
@@ -70,7 +79,7 @@ const ChatBox = () => {
             strokeWidth={2}
             stroke="currentColor"
             className="h-5 w-5"
-            style={{ transform: "rotate(180deg)" }} // Xoay ngược 180 độ
+            style={{ transform: "rotate(180deg)" }}
           >
             <path
               strokeLinecap="round"
