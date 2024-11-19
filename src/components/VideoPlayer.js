@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 
 const VideoPlayer = ({ videoSrc, title, description, autoplay = false }) => {
   const videoRef = useRef(null);
   const playerRef = useRef(null);
+  const [duration, setDuration] = useState(null);  // Thêm state để lưu độ dài video
 
   useEffect(() => {
     if (!playerRef.current) {
@@ -20,6 +21,11 @@ const VideoPlayer = ({ videoSrc, title, description, autoplay = false }) => {
           muteToggle: true,
           volumeControl: true
         }
+      });
+
+      // Cập nhật duration khi video được tải
+      playerRef.current.on('loadedmetadata', () => {
+        setDuration(playerRef.current.duration());  // Lưu độ dài video
       });
     }
 
@@ -45,10 +51,14 @@ const VideoPlayer = ({ videoSrc, title, description, autoplay = false }) => {
         </video>
       </div>
       <h2 className="mt-4 text-lg font-semibold text-white">{title}</h2>
-      <p className="text-sm text-gray-400">
-        Video Length: {Math.floor(playerRef.current.duration() / 60)}:{Math.floor(playerRef.current.duration() % 60)}
-      </p>
+      <p className="text-sm text-gray-400">{description}</p>
 
+      {/* Hiển thị độ dài video */}
+      {duration && (
+        <p className="text-sm text-gray-400">
+          Video Length: {Math.floor(duration / 60)}:{Math.floor(duration % 60)}
+        </p>
+      )}
     </div>
   );
 };
