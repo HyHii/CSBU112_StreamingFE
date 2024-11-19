@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
-// WebSocket server URL (sửa URL nếu cần)
+// WebSocket server URL (sửa URL nếu cần thiết)
 const SOCKET_SERVER_URL = "ws://localhost:4000"; // Thay bằng URL của server WebSocket
 
 const ChatBox = () => {
@@ -18,6 +18,15 @@ const ChatBox = () => {
     socketRef.current.onmessage = (event) => {
       const newMessage = JSON.parse(event.data); // Dữ liệu gửi từ server
       setMessages((prevMessages) => [...prevMessages, newMessage]);
+    };
+
+    // Xử lý lỗi và mất kết nối WebSocket
+    socketRef.current.onerror = () => {
+      alert("WebSocket connection error. Please try again later.");
+    };
+
+    socketRef.current.onclose = () => {
+      alert("WebSocket connection closed.");
     };
 
     // Cleanup khi component unmount (đóng kết nối WebSocket)
@@ -45,7 +54,10 @@ const ChatBox = () => {
   // Cuộn xuống cuối khi danh sách tin nhắn thay đổi
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      // Kiểm tra người dùng có đang cuộn lên không
+      if (messagesEndRef.current.scrollHeight === messagesEndRef.current.scrollTop + messagesEndRef.current.clientHeight) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
     }
   }, [messages]);
 
