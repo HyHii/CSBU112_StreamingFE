@@ -35,7 +35,7 @@ const ChatBox = () => {
     }
   };
 
-
+  
   return (
     <div className="bg-gray-850 rounded-2xl flex flex-col w-[400px] h-[600px] shadow-lg overflow-hidden">
       {/* Tiêu đề */}
