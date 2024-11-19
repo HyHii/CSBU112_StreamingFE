@@ -12,7 +12,8 @@
     "socket.io-client": "^4.8.1",
     "streaming-app": "file:",
     "video.js": "^8.19.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "ws": "^8.18.0"
   },
   "scripts": {
     "start": "react-scripts start",

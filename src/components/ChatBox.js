@@ -1,30 +1,52 @@
 import React, { useState, useRef, useEffect } from "react";
 
+// WebSocket server URL (sửa URL nếu cần)
+const SOCKET_SERVER_URL = "ws://localhost:4000"; // Thay bằng URL của server WebSocket
+
 const ChatBox = () => {
   const [messages, setMessages] = useState([]); // Danh sách tin nhắn
   const [input, setInput] = useState(""); // Nội dung nhập
   const messagesEndRef = useRef(null); // Tham chiếu đến cuối danh sách tin nhắn
+  const socketRef = useRef(null); // Tham chiếu đến kết nối WebSocket
 
+  // Khởi tạo WebSocket khi component mount
+  useEffect(() => {
+    // Tạo kết nối WebSocket
+    socketRef.current = new WebSocket(SOCKET_SERVER_URL);
+
+    // Lắng nghe sự kiện 'message' để nhận tin nhắn từ server
+    socketRef.current.onmessage = (event) => {
+      const newMessage = JSON.parse(event.data); // Dữ liệu gửi từ server
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    };
+
+    // Cleanup khi component unmount (đóng kết nối WebSocket)
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
+    };
+  }, []);
+
+  // Hàm gửi tin nhắn qua WebSocket
   const handleSend = () => {
     if (input.trim()) {
       const timeSent = new Date().toLocaleTimeString(); // Lấy thời gian hiện tại
-      setMessages([...messages, { text: input, sender: "You", time: timeSent }]);
+      const newMessage = { text: input, sender: "You", time: timeSent };
+
+      // Gửi tin nhắn qua WebSocket
+      socketRef.current.send(JSON.stringify(newMessage));
+
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
       setInput(""); // Xóa nội dung nhập
     }
   };
 
-
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      // Kiểm tra người dùng có đang cuộn lên không
-      if (messagesEndRef.current.scrollHeight === messagesEndRef.current.scrollTop + messagesEndRef.current.clientHeight) {
-        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  }, [messages]);
   // Cuộn xuống cuối khi danh sách tin nhắn thay đổi
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
   // Hàm xử lý khi nhấn phím Enter
@@ -35,7 +57,6 @@ const ChatBox = () => {
     }
   };
 
-  
   return (
     <div className="bg-gray-850 rounded-2xl flex flex-col w-[400px] h-[600px] shadow-lg overflow-hidden">
       {/* Tiêu đề */}
@@ -57,7 +78,6 @@ const ChatBox = () => {
         )}
         <div ref={messagesEndRef}></div>
       </div>
-
 
       {/* Khung nhập liệu */}
       <div className="bg-gray-850 p-3 border-t border-gray-700 flex items-center gap-2">
