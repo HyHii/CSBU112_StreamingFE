@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 
-// WebSocket server URL (sửa URL nếu cần thiết)
-const SOCKET_SERVER_URL = "ws://localhost:4000"; // Thay bằng URL của server WebSocket
+// Room ID
+const roomId = "12"; // Thay bằng roomId phù hợp
+const SOCKET_SERVER_URL = `ws://marmoset-unbiased-logically.ngrok-free.app/chat?roomId=12`; // URL với roomId
 
 const ChatBox = () => {
   const [messages, setMessages] = useState([]); // Danh sách tin nhắn
@@ -11,25 +12,31 @@ const ChatBox = () => {
 
   // Khởi tạo WebSocket khi component mount
   useEffect(() => {
-    // Tạo kết nối WebSocket
+    // Tạo kết nối WebSocket với roomId
     socketRef.current = new WebSocket(SOCKET_SERVER_URL);
 
-    // Lắng nghe sự kiện 'message' để nhận tin nhắn từ server
+    // Xử lý sự kiện khi nhận tin nhắn từ server
     socketRef.current.onmessage = (event) => {
-      const newMessage = JSON.parse(event.data); // Dữ liệu gửi từ server
+      const newMessage = JSON.parse(event.data); // Chuyển dữ liệu từ server về dạng JSON
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     };
 
-    // Xử lý lỗi và mất kết nối WebSocket
+    // Xử lý khi kết nối thành công
+    socketRef.current.onopen = () => {
+      socketRef.current.send(`Hello, Room ${roomId}`); // Gửi tin nhắn tham gia phòng
+    };
+
+    // Xử lý lỗi kết nối WebSocket
     socketRef.current.onerror = () => {
       alert("WebSocket connection error. Please try again later.");
     };
 
+    // Xử lý khi kết nối bị đóng
     socketRef.current.onclose = () => {
       alert("WebSocket connection closed.");
     };
 
-    // Cleanup khi component unmount (đóng kết nối WebSocket)
+    // Cleanup khi component unmount
     return () => {
       if (socketRef.current) {
         socketRef.current.close();
@@ -46,6 +53,7 @@ const ChatBox = () => {
       // Gửi tin nhắn qua WebSocket
       socketRef.current.send(JSON.stringify(newMessage));
 
+      // Cập nhật tin nhắn trong giao diện
       setMessages((prevMessages) => [...prevMessages, newMessage]);
       setInput(""); // Xóa nội dung nhập
     }
@@ -54,10 +62,7 @@ const ChatBox = () => {
   // Cuộn xuống cuối khi danh sách tin nhắn thay đổi
   useEffect(() => {
     if (messagesEndRef.current) {
-      // Kiểm tra người dùng có đang cuộn lên không
-      if (messagesEndRef.current.scrollHeight === messagesEndRef.current.scrollTop + messagesEndRef.current.clientHeight) {
-        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      }
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
 
@@ -82,7 +87,7 @@ const ChatBox = () => {
           messages.map((msg, index) => (
             <div key={index} className="text-white mb-2" style={{ wordBreak: "break-word" }}>
               <strong>{msg.sender}:</strong> {msg.text}
-              <span className="text-gray-400 text-sm ml-2">({msg.time})</span> {/* Hiển thị thời gian */}
+              <span className="text-gray-400 text-sm ml-2">({msg.time})</span>
             </div>
           ))
         ) : (
@@ -98,7 +103,7 @@ const ChatBox = () => {
           placeholder="Type your message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown} // Nhấn Enter để gửi
+          onKeyDown={handleKeyDown}
         />
         <button
           className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition flex items-center justify-center"
