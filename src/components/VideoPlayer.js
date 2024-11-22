@@ -55,7 +55,7 @@ const VideoPlayer = ({ videoSrc, title, description, autoplay = false }) => {
           ref={videoRef}  // Liên kết phần tử video với videoRef để Video.js có thể điều khiển
           className="absolute top-0 left-0 w-full h-full"
           data-setup="{}"
-          onError={() => alert("Sorry, the video couldn't be loaded.")}  // Thông báo lỗi nếu video không thể tải
+          //onError={() => alert("Sorry, the video couldn't be loaded.")}  // Thông báo lỗi nếu video không thể tải
         >
           {/* Định dạng video, có thể bổ sung thêm các nguồn khác như webm, ogg */}
           <source src={videoSrc} type="video/mp4" />
