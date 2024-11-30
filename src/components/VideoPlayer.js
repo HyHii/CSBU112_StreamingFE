@@ -1,77 +1,82 @@
 import React, { useEffect, useRef, useState } from 'react';
-import videojs from 'video.js';
-import 'video.js/dist/video-js.css';
+import Hls from 'hls.js';
 
-const VideoPlayer = ({ videoSrc, title, description, autoplay = false }) => {
-  // Tham chiếu đến phần tử video trong DOM
+const VideoPlayer = ({ videoSrc, title = '', description = '', autoplay = false }) => {
   const videoRef = useRef(null);
-  
-  // Tham chiếu đến player của Video.js để quản lý lifecycle của nó
-  const playerRef = useRef(null);
+  const [error, setError] = useState(null);
 
-  // State để lưu trữ độ dài của video
-  const [duration, setDuration] = useState(null);
-
-  // useEffect để khởi tạo Video.js và quản lý lifecycle của player
   useEffect(() => {
-    // Kiểm tra nếu player chưa được khởi tạo
-    if (!playerRef.current) {
-      // Khởi tạo player với các cấu hình từ Video.js
-      playerRef.current = videojs(videoRef.current, {
-        controls: true, // Hiển thị các điều khiển video như play/pause, volume,...
-        autoplay: autoplay, // Tự động phát video nếu props autoplay là true
-        responsive: true, // Làm cho video responsive với kích thước màn hình
-        fluid: true, // Tự động điều chỉnh kích thước video
-        fullscreen: true, // Cho phép người dùng xem video toàn màn hình
-        loop: true, // Lặp lại video khi kết thúc
-        controlBar: {
-          fullscreenToggle: true, // Cho phép nút fullscreen
-          muteToggle: true, // Cho phép nút tắt tiếng
-          volumeControl: true // Cho phép điều chỉnh âm lượng
-        }
-      });
+    if (videoRef.current) {
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(videoSrc);
+        hls.attachMedia(videoRef.current);
 
-      // Đăng ký sự kiện 'loadedmetadata' để lấy độ dài video sau khi video được tải xong
-      playerRef.current.on('loadedmetadata', () => {
-        setDuration(playerRef.current.duration());  // Cập nhật độ dài video vào state
-      });
-    }
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          console.log('HLS manifest loaded.');
+          setError(null); // Reset lỗi khi tải thành công
+          if (autoplay) {
+            videoRef.current
+              .play()
+              .catch((error) => console.error('Autoplay failed:', error));
+          }
+        });
 
-    // Cleanup khi component unmount hoặc khi autoplay thay đổi
-    return () => {
-      // Dispose player nếu đã khởi tạo để tránh rò rỉ bộ nhớ
-      if (playerRef.current) {
-        playerRef.current.dispose();
-        playerRef.current = null;
+        hls.on(Hls.Events.ERROR, (event, data) => {
+          console.error('HLS.js Error:', data);
+          if (data.fatal) {
+            setError('Failed to load the livestream. Please check the stream URL.');
+            hls.destroy();
+          }
+        });
+
+        return () => {
+          hls.destroy();
+        };
+      } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+        videoRef.current.src = videoSrc;
+        videoRef.current
+          .play()
+          .catch((error) => console.error('Autoplay failed:', error));
+      } else {
+        setError('HLS is not supported in this browser.');
       }
-    };
-  }, [autoplay]); // useEffect sẽ chạy lại khi prop autoplay thay đổi
+    }
+  }, [videoSrc, autoplay]);
 
   return (
-    <div className="bg-black rounded-lg overflow-hidden">
-      {/* Phần video player, sử dụng tỷ lệ 16:9 để đảm bảo video có tỷ lệ đúng */}
-      <div className="relative w-full pb-[56.25%]">
-        <video
-          ref={videoRef}  // Liên kết phần tử video với videoRef để Video.js có thể điều khiển
-          className="absolute top-0 left-0 w-full h-full"
-          data-setup="{}"
-          //onError={() => alert("Sorry, the video couldn't be loaded.")}  // Thông báo lỗi nếu video không thể tải
-        >
-          {/* Định dạng video, có thể bổ sung thêm các nguồn khác như webm, ogg */}
-          <source src={videoSrc} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+    <div style={{ backgroundColor: 'black', borderRadius: '8px', padding: '10px', color: 'white' }}>
+      <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0 }}>
+        {!error && (
+          <video
+            ref={videoRef}
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+            controls
+            muted
+          />
+        )}
+        {error && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              color: 'red',
+              fontSize: '18px',
+            }}
+          >
+            {error}
+          </div>
+        )}
       </div>
-      {/* Tiêu đề video */}
-      <h2 className="mt-4 text-lg font-semibold text-white">{title}</h2>
-      <p className="text-sm text-gray-400">{description}</p>
-
-      {/* Hiển thị độ dài video nếu có */}
-      {duration && (
-        <p className="text-sm text-gray-400">
-          Video Length: {Math.floor(duration / 60)}:{Math.floor(duration % 60)}
-        </p>
-      )}
+      {title && <h3 style={{ marginTop: '10px' }}>{title}</h3>}
+      {description && <p style={{ color: 'gray' }}>{description}</p>}
     </div>
   );
 };
