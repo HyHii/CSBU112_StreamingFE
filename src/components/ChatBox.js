@@ -2,12 +2,13 @@ import React, { useState, useRef, useEffect } from "react";
 
 // Room ID
 const roomId = "12";
-const SOCKET_SERVER_URL = `ws://marmoset-unbiased-logically.ngrok-free.app/chat?roomId=12`;
+// const SOCKET_SERVER_URL = `ws://marmoset-unbiased-logically.ngrok-free.app/chat?roomId=${roomId}`;
+const SOCKET_SERVER_URL = `ws://localhost:8080`;
 
 const ChatBox = ({ user = "Guest" }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [error, setError] = useState(""); // State để lưu thông báo lỗi
+  const [error, setError] = useState(""); // Trạng thái lưu lỗi
   const messagesEndRef = useRef(null);
   const socketRef = useRef(null);
 
@@ -15,51 +16,62 @@ const ChatBox = ({ user = "Guest" }) => {
   useEffect(() => {
     socketRef.current = new WebSocket(SOCKET_SERVER_URL);
 
+    socketRef.current.onopen = () => {
+      console.log("WebSocket connected!");
+      // Gửi thông điệp "join room" khi kết nối thành công
+      socketRef.current.send(
+        JSON.stringify({
+          user: user,
+          roomId: roomId,
+          message: "joined the room!",
+        })
+      );
+    };
+
     socketRef.current.onmessage = (event) => {
       const newMessage = JSON.parse(event.data);
       setMessages((prevMessages) => [...prevMessages, newMessage]);
-      console.log("Message:", event.data);
+      console.log("Message received:", newMessage);
     };
 
-    socketRef.current.onopen = () => {
-      const message = {
-         user: user,
-         roomId: roomId,
-         message: "dang coi"
-      };
-      socketRef.current.send(JSON.stringify(message));
-   };
     socketRef.current.onerror = () => {
-      console.error("Lỗi WebSocket:", socketRef.current.readyState);
-      setError("Có lỗi xảy ra trong kết nối WebSocket. Vui lòng thử lại sau.");
+      console.error("WebSocket error!");
+      setError("An error occurred. Please try again later.");
     };
 
-    socketRef.current.onclose = (event) => {
-      console.log("WebSocket đã đóng:", event);
-      setError("Kết nối WebSocket đã bị đóng.");
-   };
+    socketRef.current.onclose = () => {
+      console.warn("WebSocket closed.");
+      setError("Connection closed. Reconnect if necessary.");
+    };
 
+    // Cleanup WebSocket on unmount
     return () => {
       if (socketRef.current) {
         socketRef.current.close();
       }
     };
-  }, []);
+  }, [user]);
 
   const handleSend = () => {
     if (input.trim() && socketRef.current.readyState === WebSocket.OPEN) {
       const timeSent = new Date().toLocaleTimeString();
-      const newMessage = { message:messages, user: user, roomId:roomId};
+      const newMessage = {
+        user: user,
+        roomId: roomId,
+        text: input.trim(),
+        time: timeSent,
+      };
 
-      socketRef.current.send(JSON.stringify(newMessage));
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      socketRef.current.send(JSON.stringify(newMessage)); // Gửi tin nhắn qua WebSocket
+      setMessages((prevMessages) => [...prevMessages, newMessage]); // Cập nhật tin nhắn trong UI
       setInput("");
     } else if (socketRef.current.readyState !== WebSocket.OPEN) {
-      setError("Không thể gửi tin nhắn, kết nối chưa sẵn sàng.");
+      setError("Unable to send message. Connection not ready.");
     }
   };
 
   useEffect(() => {
+    // Tự động cuộn xuống cuối khi có tin nhắn mới
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -90,8 +102,12 @@ const ChatBox = ({ user = "Guest" }) => {
       <div className="flex-grow overflow-y-auto bg-gray-850 p-2 rounded-lg mb-4">
         {messages.length > 0 ? (
           messages.map((msg, index) => (
-            <div key={index} className="text-white mb-2" style={{ wordBreak: "break-word" }}>
-              <strong>{msg.sender}:</strong> {msg.text}
+            <div
+              key={index}
+              className="text-white mb-2"
+              style={{ wordBreak: "break-word" }}
+            >
+              <strong>{msg.user}:</strong> {msg.text}
               <span className="text-gray-400 text-sm ml-2">({msg.time})</span>
             </div>
           ))
@@ -104,7 +120,7 @@ const ChatBox = ({ user = "Guest" }) => {
       {/* Khung nhập liệu */}
       <div className="bg-gray-850 p-3 border-t border-gray-700 flex items-center gap-2">
         <textarea
-          className="flex-grow p-2 rounded-l-lg bg-gray-700 text-white resize-none h-12"
+          className="flex-grow p-2 rounded-l-lg bg-gray-700 text-white resize-none h-12 focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Type your message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}

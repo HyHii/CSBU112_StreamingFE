@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "./components/Navbar";
 import VideoPlayer from "./components/VideoPlayer";
-// import ChatBox from "./components/ChatBox";
+import ChatBox from "./components/ChatBox";
 import StreamerInfo from "./components/StreamInfo";
 
 const App = () => {
@@ -20,7 +20,7 @@ const App = () => {
             <StreamerInfo />
           </div>
           <div>
-            {/* <ChatBox /> */}
+            <ChatBox />
           </div>
         </div>
       </div>
