@@ -52,7 +52,6 @@ const VideoPlayer = ({ videoSrc, title = '', description = '', autoplay = false 
             ref={videoRef}
             style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
             controls
-            muted
           />
         )}
         {error && (
