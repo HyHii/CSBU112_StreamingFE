@@ -53,7 +53,7 @@ const ChatBox = ({ user = "Bố mày" }) => {
         message: input.trim(),
       };
       socketRef.current.send(JSON.stringify(newMessage)); // Gửi tin nhắn qua WebSocket
-        setMessages((prevMessages) => [...prevMessages, newMessage]); // Cập nhật tin nhắn trong UI
+        // setMessages((prevMessages) => [...prevMessages, newMessage]); // Cập nhật tin nhắn trong UI
         setInput("");
     } else if (socketRef.current.readyState !== WebSocket.OPEN) {
       setError("Unable to send message. Connection not ready.");
