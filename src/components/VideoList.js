@@ -7,14 +7,17 @@ const VideoList = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Lấy dữ liệu livestream từ API
+  // Lấy danh sách livestream từ API
   useEffect(() => {
     const fetchLivestreams = async () => {
       try {
-        const response = await fetch("https://api.example.com/livestreams"); // Thay bằng API thực tế
+        const response = await fetch("https://marmoset-unbiased-logically.ngrok-free.app/api/stream"); // Thay bằng URL API thực tế
         if (!response.ok) throw new Error("Failed to fetch livestreams");
         const data = await response.json();
-        setLivestreams(data);
+
+        // Lọc chỉ những streamer đang livestream
+        const liveStreams = data.filter((stream) => stream.isLive === true);
+        setLivestreams(liveStreams);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -29,27 +32,27 @@ const VideoList = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div>
-      <h2 className="text-lg font-semibold mb-4">Live Streams</h2>
-      <ul>
+    <div className="container mx-auto p-4">
+      <h2 className="text-2xl font-bold mb-4">Live Streams</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {livestreams.map((stream) => (
-          <li
+          <div
             key={stream.id}
-            className="flex items-center mb-4 cursor-pointer hover:bg-gray-800 p-2 rounded-lg"
-            onClick={() => navigate(`/stream/${stream.id}`)} // Điều hướng tới trang phát trực tiếp
+            className="bg-gray-800 rounded-lg overflow-hidden shadow-md cursor-pointer hover:shadow-lg"
+            onClick={() => navigate(`/streampage?id=${stream.id}`)}
           >
             <img
               src={stream.thumbnail}
               alt={stream.title}
-              className="w-16 h-16 rounded-lg mr-4"
+              className="w-full h-48 object-cover"
             />
-            <div>
-              <h3 className="text-sm font-semibold">{stream.title}</h3>
-              <p className="text-gray-400 text-xs">{stream.viewers} viewers</p>
+            <div className="p-4">
+              <h3 className="text-lg font-semibold text-white">{stream.title}</h3>
+              <p className="text-gray-400 text-sm">{stream.viewers} viewers</p>
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

@@ -7,7 +7,6 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     console.log('Email:', email, 'Password:', password);
-    // Thêm logic xử lý đăng nhập ở đây
   };
 
   return (

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 
 const roomId = "12";
 const SOCKET_SERVER_URL = `ws://marmoset-unbiased-logically.ngrok-free.app/chat?roomId=${roomId}`;
-
+// const SOCKET_SERVER_URL = `ws://localhost:8080`;
 const ChatBox = ({ user = "Bố mày" }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -13,7 +13,6 @@ const ChatBox = ({ user = "Bố mày" }) => {
   // Khởi tạo WebSocket khi component mount
   useEffect(() => {
     socketRef.current = new WebSocket(SOCKET_SERVER_URL);
-
     socketRef.current.onopen = () => {
       console.log("WebSocket connected!");  
       socketRef.current.send(
@@ -48,14 +47,13 @@ const ChatBox = ({ user = "Bố mày" }) => {
 
   const handleSend = () => {
     if (input.trim() && socketRef.current.readyState === WebSocket.OPEN) {
-      const timeSent = new Date().toLocaleTimeString();
       const newMessage = {
         user: user,
         roomId: roomId,
         message: input.trim(),
       };
       socketRef.current.send(JSON.stringify(newMessage)); // Gửi tin nhắn qua WebSocket
-        // setMessages((prevMessages) => [...prevMessages, newMessage]); // Cập nhật tin nhắn trong UI
+        setMessages((prevMessages) => [...prevMessages, newMessage]); // Cập nhật tin nhắn trong UI
         setInput("");
     } else if (socketRef.current.readyState !== WebSocket.OPEN) {
       setError("Unable to send message. Connection not ready.");

@@ -12,7 +12,6 @@ const SignUp = () => {
       return;
     }
     console.log('Email:', email, 'Password:', password);
-    // Thêm logic xử lý đăng ký ở đây
   };
 
   return (

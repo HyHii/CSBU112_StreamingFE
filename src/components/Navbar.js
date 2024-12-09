@@ -7,12 +7,12 @@ const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         <h1 className="text-2xl font-bold text-white">
           <Link to="/" className="text-gray-300 hover:text-white transition-colors">
-          Streaming Web
+            Streaming Web
           </Link>
         </h1>
         <div className="space-x-4">
-          <Link 
-            to="/streampage" 
+          <Link
+            to="/streampage"
             className="text-gray-300 hover:text-white transition-colors"
           >
             Stream Page
@@ -29,6 +29,13 @@ const Navbar = () => {
           >
             Sign Up
           </Link>
+          <Link
+            to="/Profile"
+            className="text-gray-300 hover:text-white transition-colors duration-200"
+          >
+            Profile
+          </Link>
+
         </div>
       </div>
     </nav>
