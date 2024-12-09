@@ -1,0 +1,6 @@
+video::-webkit-media-controls-current-time-display {
+    display: none !important;
+}
+video::-webkit-media-controls-time-remaining-display {
+    display: none !important;
+}

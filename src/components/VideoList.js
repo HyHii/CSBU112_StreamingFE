@@ -15,7 +15,6 @@ const VideoList = () => {
         if (!response.ok) throw new Error("Failed to fetch livestreams");
         const data = await response.json();
 
-        // Lọc chỉ những streamer đang livestream
         const liveStreams = data.filter((stream) => stream.isLive === true);
         setLivestreams(liveStreams);
       } catch (err) {

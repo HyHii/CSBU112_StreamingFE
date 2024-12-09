@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
+import "../styles/VideoPlayer.css"
 
 const VideoPlayer = ({ videoSrc, title = '', description = '', autoplay = false }) => {
   const videoRef = useRef(null);
