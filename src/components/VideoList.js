@@ -15,7 +15,11 @@ const VideoList = () => {
         if (!response.ok) throw new Error("Failed to fetch livestreams");
         const data = await response.json();
 
-        const liveStreams = data.filter((stream) => stream.isLive === true);
+        const liveStreams = data.map((stream) => ({
+          id: stream.id,
+          title: stream.title,
+          liveStatus: stream.isLive,
+        }));
         setLivestreams(liveStreams);
       } catch (err) {
         setError(err.message);
@@ -33,25 +37,24 @@ const VideoList = () => {
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Live Streams</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <ul className="space-y-4">
         {livestreams.map((stream) => (
-          <div
+          <li
             key={stream.id}
-            className="bg-gray-800 rounded-lg overflow-hidden shadow-md cursor-pointer hover:shadow-lg"
+            className="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 cursor-pointer"
             onClick={() => navigate(`/streampage?id=${stream.id}`)}
           >
-            <img
-              src={stream.thumbnail}
-              alt={stream.title}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-              <h3 className="text-lg font-semibold text-white">{stream.title}</h3>
-              <p className="text-gray-400 text-sm">{stream.viewers} viewers</p>
-            </div>
-          </div>
+            {/* Title */}
+            <h3 className="text-lg font-semibold text-white">{stream.title}</h3>
+            {/* Live Status */}
+            <p className={`text-sm ${stream.liveStatus ? "text-green-500" : "text-red-500"}`}>
+              {stream.liveStatus ? "Live" : "Offline"}
+            </p>
+            {/* ID */}
+            <p className="text-gray-400 text-sm">Stream ID: {stream.id}</p>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 };
