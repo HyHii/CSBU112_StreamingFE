@@ -1,26 +1,56 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log('Email:', email, 'Password:', password);
+    setError(null); // Xóa thông báo lỗi trước đó
+    setSuccessMessage(null); // Xóa thông báo thành công trước đó
+
+    try {
+      const response = await axios.post(
+        'https://marmoset-unbiased-logically.ngrok-free.app/api/account/login',
+        {
+          name: name,
+          password: password,
+        }
+      );
+
+      if (response.data.success) {
+        setSuccessMessage('Đăng nhập thành công!');
+        setError(null);
+        // Thực hiện điều hướng hoặc hành động sau khi đăng nhập thành công
+      } else {
+        setError(response.data.error || 'Đăng nhập thất bại!');
+        setSuccessMessage(null);
+      }
+    } catch (err) {
+      setError(err.response?.data?.error || 'Đã xảy ra lỗi không xác định!');
+      setSuccessMessage(null);
+    }
   };
 
   return (
     <div className="bg-gray-800 min-h-screen flex items-center justify-center">
       <form className="bg-gray-900 p-6 rounded-lg shadow-md w-80" onSubmit={handleLogin}>
         <h2 className="text-lg font-bold text-center text-white mb-4">Login</h2>
-        <label className="block mb-2 text-sm font-medium text-gray-300">Email:</label>
+        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+        {successMessage && <p className="text-green-500 text-sm mb-2">{successMessage}</p>}
+
+        <label className="block mb-2 text-sm font-medium text-gray-300">Username:</label>
         <input
-          type="email"
+          type="text"
           className="w-full p-2 mb-4 text-black rounded-lg"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           required
         />
+
         <label className="block mb-2 text-sm font-medium text-gray-300">Password:</label>
         <input
           type="password"
@@ -29,6 +59,7 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+
         <button
           type="submit"
           className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
