@@ -22,8 +22,11 @@ const Login = () => {
           password: password,
         }
       );
-      // console.log(response);
+      console.log(response);
       if (response.status === 200) {
+        const token = response.data.data;
+        localStorage.setItem("token", token);
+        localStorage.setItem("name", name);
         setSuccessMessage('Đăng nhập thành công!');
         setError(null);
         setTimeout(() => {

@@ -1,45 +1,72 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const VideoList = () => {
-  const [items, setItems] = useState([]); // Lưu danh sách dữ liệu
-  const [isLoaded, setIsLoaded] = useState(false); // Trạng thái tải dữ liệu
-  const [error, setError] = useState(null); // Xử lý lỗi
-
-  const api = "https://marmoset-unbiased-logically.ngrok-free.app/api/stream"; // Thay bằng URL đúng
-  const token =""
+  const [streams, setStreams] = useState([]); // Lưu danh sách stream
+  const [error, setError] = useState(null);   // Trạng thái lỗi
+  const [isLoading, setIsLoading] = useState(true); // Loading state
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchStreams = async () => {
       try {
-        const response = await axios.get(api, {
-          headers: { Authorization: `Bearer ${token}` },
+        const token = localStorage.getItem("token"); // Lấy token từ localStorage
+
+        // Gọi request GET tới API
+        const response = await axios({
+          method: "GET",
+          url: "https://marmoset-unbiased-logically.ngrok-free.app/api/stream",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
-        setItems(response.data); // Lưu dữ liệu vào state
-        setIsLoaded(true); // Đánh dấu dữ liệu đã tải xong
+
+        // Lưu kết quả vào state
+        setStreams(response.data);
+        setIsLoading(false);
       } catch (err) {
-        setError(err.message); // Ghi nhận lỗi nếu xảy ra
-        setIsLoaded(true);
+        console.error("Error fetching streams:", err);
+        setError("Không thể tải danh sách stream. Vui lòng thử lại!");
+        setIsLoading(false);
       }
     };
 
-    fetchData();
-  }, []); // Chạy một lần khi component được render
+    fetchStreams(); // Gọi hàm khi component mount
+  }, []);
 
-  if (!isLoaded) return <p>Loading...</p>; // Hiển thị khi đang tải
-  if (error) return <p>Error: {error}</p>; // Hiển thị khi có lỗi
+  // Trạng thái loading
+  if (isLoading) return <div className="text-white p-4">Đang tải danh sách stream...</div>;
+
+  // Trạng thái lỗi
+  if (error) return <div className="text-red-500 p-4">{error}</div>;
 
   return (
-    <div>
-      <h2>Live Streams</h2>
-      <ul>
-        {items.map((item) => (
-          <li key={item.id}>
-            <p>Title: {item.title}</p>
-            <p>Status: {item.liveStatus ? "Live" : "Offline"}</p>
-          </li>
-        ))}
-      </ul>
+    <div className="p-4 bg-gray-900 text-white min-h-screen">
+      <h2 className="text-2xl font-bold mb-4">Danh Sách Stream</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {streams.length > 0 ? (
+          streams.map((stream) => (
+            <div
+              key={stream.id}
+              className="bg-gray-800 p-4 rounded-lg shadow-lg hover:scale-105 transition-transform"
+            >
+              <h3 className="text-xl font-semibold">{stream.title}</h3>
+              <p className="text-gray-400">{stream.description || "Không có mô tả."}</p>
+              <p className="mt-2">
+                Trạng thái:{" "}
+                <span
+                  className={`font-bold ${
+                    stream.liveStatus ? "text-green-500" : "text-red-500"
+                  }`}
+                >
+                  {stream.liveStatus ? "Đang phát" : "Offline"}
+                </span>
+              </p>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500">Không có stream nào đang tồn tại.</p>
+        )}
+      </div>
     </div>
   );
 };

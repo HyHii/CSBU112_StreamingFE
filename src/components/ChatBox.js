@@ -3,7 +3,8 @@ import React, { useState, useRef, useEffect } from "react";
 const roomId = "12";
 const SOCKET_SERVER_URL = `ws://marmoset-unbiased-logically.ngrok-free.app/chat?roomId=${roomId}`;
 // const SOCKET_SERVER_URL = `ws://localhost:8080`;
-const ChatBox = ({ user = "Bố mày" }) => {
+const ChatBox = () => {
+  const [user, setUser] = useState("Anonymous"); // State lưu username
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
@@ -12,12 +13,15 @@ const ChatBox = ({ user = "Bố mày" }) => {
 
   // Khởi tạo WebSocket khi component mount
   useEffect(() => {
+    const username = localStorage.getItem("name") || "Anonymous";
+    setUser(username);
+
     socketRef.current = new WebSocket(SOCKET_SERVER_URL);
     socketRef.current.onopen = () => {
       console.log("WebSocket connected!");  
       socketRef.current.send(
         JSON.stringify({
-          user: user,
+          user: "Chatbot",
           roomId: roomId,
           message: `${user} joined the room!`,
         })
