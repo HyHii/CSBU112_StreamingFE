@@ -1,82 +1,89 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from 'react';
+import axios from 'axios';
 
-const UserProfile = () => {
-  const [userInfo, setUserInfo] = useState(null);
-  const [loading, setLoading] = useState(true);
+const SignUp = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState(null);
-  const [showKey, setShowKey] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const response = await fetch("https://marmoset-unbiased-logically.ngrok-free.app/api/user");
-        if (!response.ok) throw new Error("Failed to fetch user info");
-        const data = await response.json();
-        setUserInfo(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const handleSignUp = async (e) => {
+    e.preventDefault();
 
-    fetchUserInfo();
-  }, []);
+    // Kiểm tra password có khớp nhau không
+    if (password !== confirmPassword) {
+      setError('Passwords do not match!');
+      return;
+    }
 
-  const handleGenerateKey = async () => {
     try {
-      const response = await fetch("https://marmoset-unbiased-logically.ngrok-free.app/api/user/streaming-key", {
-        method: "PATCH",
+      // Gửi request đăng ký
+      const response = await axios.post('https://marmoset-unbiased-logically.ngrok-free.app/api/account/register', {
+        name: username,
+        password: password,
       });
-      if (!response.ok) throw new Error("Failed to generate new streaming key");
-      const data = await response.json();
-      setUserInfo((prev) => ({ ...prev, streamingKey: data.streamingKey }));
+
+      // Xử lý phản hồi từ server
+      if (response.status === 200 || response.data.success) {
+        setSuccessMessage('Account registered successfully!');
+        setError(null);
+      } else {
+        setError(response.data.error || 'Failed to register');
+        setSuccessMessage(null);
+      }
     } catch (err) {
-      alert("Error generating new key: " + err.message);
+      setError(err.response?.data?.error || 'Server error! Please try again later.');
+      setSuccessMessage(null);
     }
   };
 
-  if (loading) return <p>Loading user info...</p>;
-  if (error) return <p>Error: {error}</p>;
-
   return (
-    <div className="bg-gray-900 min-h-screen text-white p-6">
-      <div className="max-w-lg mx-auto bg-gray-800 p-6 rounded-lg shadow-md">
-        <div className="flex items-center space-x-4 mb-6">
-          <img
-            src={userInfo.avatar || "https://via.placeholder.com/150"}
-            alt="Avatar"
-            className="w-20 h-20 rounded-full object-cover"
-          />
-          <div>
-            <h1 className="text-2xl font-bold">{userInfo.username}</h1>
-            <p className="text-gray-400">{userInfo.email}</p>
-            <p className="text-gray-400">{userInfo.followers} followers</p>
-          </div>
-        </div>
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-2">Streaming Key</h2>
-          <div className="bg-gray-700 p-3 rounded-lg flex justify-between items-center">
-            <span>
-              {showKey ? userInfo.streamingKey : "************"}
-            </span>
-            <button
-              className="text-blue-500 hover:underline"
-              onClick={() => setShowKey(!showKey)}
-            >
-              {showKey ? "Hide" : "Show"}
-            </button>
-          </div>
-          <button
-            className="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-            onClick={handleGenerateKey}
-          >
-            Generate New Key
-          </button>
-        </div>
-      </div>
+    <div className="bg-gray-800 min-h-screen flex items-center justify-center">
+      <form
+        className="bg-gray-900 p-6 rounded-lg shadow-md w-80"
+        onSubmit={handleSignUp}
+      >
+        <h2 className="text-lg font-bold text-center text-white mb-4">Sign Up</h2>
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {successMessage && <p className="text-green-500 text-sm">{successMessage}</p>}
+
+        <label className="block mb-2 text-sm font-medium text-gray-300">Username:</label>
+        <input
+          type="text"
+          className="w-full p-2 mb-4 text-black rounded-lg"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
+
+        <label className="block mb-2 text-sm font-medium text-gray-300">Password:</label>
+        <input
+          type="password"
+          className="w-full p-2 mb-4 text-black rounded-lg"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+
+        <label className="block mb-2 text-sm font-medium text-gray-300">Confirm Password:</label>
+        <input
+          type="password"
+          className="w-full p-2 mb-4 text-black rounded-lg"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+        />
+
+        <button
+          type="submit"
+          className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"
+        >
+          Sign Up
+        </button>
+      </form>
     </div>
   );
 };
 
-export default UserProfile;
+export default SignUp;

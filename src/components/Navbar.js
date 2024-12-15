@@ -1,7 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token'); // Lấy token từ localStorage
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
   return (
     <nav className="bg-gray-800 p-4">
       <div className="container mx-auto flex justify-between items-center">
@@ -17,25 +28,10 @@ const Navbar = () => {
           >
             Stream Page
           </Link>
-          <Link
-            to="/login"
-            className="text-gray-300 hover:text-white transition-colors duration-200"
-          >
-            Login
-          </Link>
-          <Link
-            to="/signup"
-            className="text-gray-300 hover:text-white transition-colors duration-200"
-          >
-            Sign Up
-          </Link>
-          <Link
-            to="/Profile"
-            className="text-gray-300 hover:text-white transition-colors duration-200"
-          >
-            Profile
-          </Link>
 
+          {!isLoggedIn && <Link to="/login" className="hover:text-white">Login</Link>}
+          {!isLoggedIn && <Link to="/signup" className="hover:text-white">Sign Up</Link>}
+          {isLoggedIn && <Link to="/profile" className="hover:text-white">Profile</Link>}
         </div>
       </div>
     </nav>

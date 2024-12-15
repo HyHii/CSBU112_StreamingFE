@@ -1,57 +1,42 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const VideoList = () => {
-  const [livestreams, setLivestreams] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const [items, setItems] = useState([]); // Lưu danh sách dữ liệu
+  const [isLoaded, setIsLoaded] = useState(false); // Trạng thái tải dữ liệu
+  const [error, setError] = useState(null); // Xử lý lỗi
 
-  // Lấy danh sách livestream từ API
+  const api = "https://marmoset-unbiased-logically.ngrok-free.app/api/stream"; // Thay bằng URL đúng
+  const token =""
+
   useEffect(() => {
-    const fetchLivestreams = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch("https://marmoset-unbiased-logically.ngrok-free.app/api/stream"); // Thay bằng URL API thực tế
-        if (!response.ok) throw new Error("Failed to fetch livestreams");
-        const data = await response.json();
-
-        const liveStreams = data.map((stream) => ({
-          id: stream.id,
-          title: stream.title,
-          liveStatus: stream.isLive,
-        }));
-        setLivestreams(liveStreams);
+        const response = await axios.get(api, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setItems(response.data); // Lưu dữ liệu vào state
+        setIsLoaded(true); // Đánh dấu dữ liệu đã tải xong
       } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        setError(err.message); // Ghi nhận lỗi nếu xảy ra
+        setIsLoaded(true);
       }
     };
 
-    fetchLivestreams();
-  }, []);
+    fetchData();
+  }, []); // Chạy một lần khi component được render
 
-  if (loading) return <p>Loading livestreams...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (!isLoaded) return <p>Loading...</p>; // Hiển thị khi đang tải
+  if (error) return <p>Error: {error}</p>; // Hiển thị khi có lỗi
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Live Streams</h2>
-      <ul className="space-y-4">
-        {livestreams.map((stream) => (
-          <li
-            key={stream.id}
-            className="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 cursor-pointer"
-            onClick={() => navigate(`/streampage?id=${stream.id}`)}
-          >
-            {/* Title */}
-            <h3 className="text-lg font-semibold text-white">{stream.title}</h3>
-            {/* Live Status */}
-            <p className={`text-sm ${stream.liveStatus ? "text-green-500" : "text-red-500"}`}>
-              {stream.liveStatus ? "Live" : "Offline"}
-            </p>
-            {/* ID */}
-            <p className="text-gray-400 text-sm">Stream ID: {stream.id}</p>
+    <div>
+      <h2>Live Streams</h2>
+      <ul>
+        {items.map((item) => (
+          <li key={item.id}>
+            <p>Title: {item.title}</p>
+            <p>Status: {item.liveStatus ? "Live" : "Offline"}</p>
           </li>
         ))}
       </ul>

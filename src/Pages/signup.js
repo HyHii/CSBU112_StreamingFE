@@ -26,7 +26,7 @@ const SignUp = () => {
           password: password,
         }
       );
-      console.log(response);
+      // console.log(response);
       if (response.status === 200) {
         setSuccessMessage('Đăng ký thành công!');
         setError(null);

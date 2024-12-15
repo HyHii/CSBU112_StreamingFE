@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = () => {
@@ -6,6 +7,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const navigate = useNavigate(); // Sử dụng useNavigate để điều hướng
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -20,13 +22,15 @@ const Login = () => {
           password: password,
         }
       );
-
-      if (response.data.success) {
+      // console.log(response);
+      if (response.status === 200) {
         setSuccessMessage('Đăng nhập thành công!');
         setError(null);
-        // Thực hiện điều hướng hoặc hành động sau khi đăng nhập thành công
+        setTimeout(() => {
+          navigate('/'); // Chuyển hướng sang trang main
+        }, 1500); // Đợi 1.5 giây trước khi chuyển hướng
       } else {
-        setError(response.data.error || 'Đăng nhập thất bại!');
+        setError(response.data.error || 'Đã xảy ra lỗi!');
         setSuccessMessage(null);
       }
     } catch (err) {
