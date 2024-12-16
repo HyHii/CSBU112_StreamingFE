@@ -1,70 +1,72 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const VideoList = () => {
-  const [streams, setStreams] = useState([]); // Lưu danh sách stream
-  const [error, setError] = useState(null);   // Trạng thái lỗi
-  const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [streams, setStreams] = useState([]);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchStreams = async () => {
-      try {
-        const token = localStorage.getItem("token"); // Lấy token từ localStorage
+  const fetchStreams = async () => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token");
 
-        // Gọi request GET tới API
-        const response = await axios({
-          method: "GET",
-          url: "https://marmoset-unbiased-logically.ngrok-free.app/api/stream",
+      const response = await axios.get(
+        "https://marmoset-unbiased-logically.ngrok-free.app/api/stream/streaming",
+        {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        });
+        }
+      );
 
-        // Lưu kết quả vào state
+      console.log("API Response:", response.data);
+
+      if (Array.isArray(response.data)) {
         setStreams(response.data);
-        setIsLoading(false);
-      } catch (err) {
-        console.error("Error fetching streams:", err);
-        setError("Không thể tải danh sách stream. Vui lòng thử lại!");
-        setIsLoading(false);
+      } else {
+        setStreams([]);
       }
-    };
+      setIsLoading(false);
+    } catch (err) {
+      console.error("Error fetching streams:", err);
+      setError("Không thể tải danh sách stream.");
+      setIsLoading(false);
+    }
+  };
 
-    fetchStreams(); // Gọi hàm khi component mount
+  useEffect(() => {
+    fetchStreams();
   }, []);
-
-  // Trạng thái loading
-  if (isLoading) return <div className="text-white p-4">Đang tải danh sách stream...</div>;
-
-  // Trạng thái lỗi
-  if (error) return <div className="text-red-500 p-4">{error}</div>;
 
   return (
     <div className="p-4 bg-gray-900 text-white min-h-screen">
-      <h2 className="text-2xl font-bold mb-4">Danh Sách Stream</h2>
+      <h2 className="text-2xl font-bold mb-4">Danh Sách Stream Đang Phát</h2>
+
+      {isLoading && <p className="text-white">Đang tải danh sách stream...</p>}
+
+      {error && <p className="text-red-500">{error}</p>}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {streams.length > 0 ? (
+        {!isLoading && streams.length > 0 ? (
           streams.map((stream) => (
             <div
               key={stream.id}
               className="bg-gray-800 p-4 rounded-lg shadow-lg hover:scale-105 transition-transform"
             >
-              <h3 className="text-xl font-semibold">{stream.title}</h3>
+              <h3 className="text-xl font-semibold">{stream.title || "No Title"}</h3>
               <p className="text-gray-400">{stream.description || "Không có mô tả."}</p>
-              <p className="mt-2">
-                Trạng thái:{" "}
-                <span
-                  className={`font-bold ${
-                    stream.liveStatus ? "text-green-500" : "text-red-500"
-                  }`}
-                >
-                  {stream.liveStatus ? "Đang phát" : "Offline"}
-                </span>
-              </p>
+              <Link
+                to={`/streampage?username=${stream.name}`}
+                className="block mt-4 bg-blue-600 text-white px-4 py-2 rounded text-center hover:bg-blue-700"
+              >
+                Xem Stream
+              </Link>
             </div>
           ))
         ) : (
-          <p className="text-gray-500">Không có stream nào đang tồn tại.</p>
+          !isLoading && <p className="text-gray-500">Không có stream nào đang tồn tại.</p>
         )}
       </div>
     </div>
