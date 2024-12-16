@@ -65,7 +65,7 @@ const Profile = () => {
       {error && <p className="text-red-500">{error}</p>}
 
       <div className="mb-4">
-        <p><strong>User ID:</strong> {profile.id}</p>
+        {/* <p><strong>User ID:</strong> {profile.id}</p> */}
         <p><strong>Username:</strong> {profile.name}</p>
         <p>
           <strong>Title:</strong>
