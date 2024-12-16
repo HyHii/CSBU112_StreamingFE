@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 
 const roomId = "12";
-const SOCKET_SERVER_URL = `ws://marmoset-unbiased-logically.ngrok-free.app/chat?roomId=${roomId}`;
+const SOCKET_SERVER_URL = `wss://marmoset-unbiased-logically.ngrok-free.app/chat?roomId=${roomId}`;
 // const SOCKET_SERVER_URL = `ws://localhost:8080`;
 const ChatBox = () => {
   const [user, setUser] = useState("Anonymous"); // State lưu username
