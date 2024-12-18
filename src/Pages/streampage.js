@@ -27,16 +27,10 @@ const StreamPage = () => {
 
         const response = await axios.get(
           `https://csbu-software-design-be.onrender.com/api/stream/watch?streamId=${name}`, // Truyền `name` vào API  
-          // "https://csbu-software-design-be.onrender.com/api/stream/watch?streamId=KayGV"
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        const url = `https://csbu-software-design-be.onrender.com/api/stream/watch?streamId=${name}`;
-        console.log("Request URL:", url);
-        console.log("Token:", token);
-        console.log("Stream URL:", streamData);
-        // console.log("API Response:", response.data);
         setStreamData(response.data);
       } catch (err) {
         console.error("Error fetching stream data:", err);
@@ -51,20 +45,19 @@ const StreamPage = () => {
 
   if (isLoading) return <div className="text-white p-4">Đang tải stream...</div>;
   if (error) return <div className="text-red-500 p-4">{error}</div>;
-
   return (
     <div className="bg-gray-900 text-white min-h-screen p-4">
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-2">
           <VideoPlayer
-            videoSrc={streamData?.streamUrl || ""}
+            // videoSrc={streamData?.streamUrl || ""}
+            videoSrc={`https://csbu-software-design-be.onrender.com/api/stream/watch?streamId=${name}`} // URL video HLS
+            //videoSrc="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
             autoplay={true}
           />
           <StreamerInfo streamer={streamData || {}} />
         </div>
-        <div>
-          <ChatBox user={streamData?.name || "Anonymous"} />
-        </div>
+        <ChatBox user={streamData?.name || "Anonymous"} />
       </div>
     </div>
   );
