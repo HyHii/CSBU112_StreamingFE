@@ -28,9 +28,6 @@ const Navbar = () => {
           </Link>
         </h1>
         <div className="space-x-4">
-          <Link to="/streampage" className="text-gray-300 hover:text-white">
-            Stream Page
-          </Link>
           {!isLoggedIn && <Link to="/login" className="hover:text-white">Login</Link>}
           {!isLoggedIn && <Link to="/signup" className="hover:text-white">Sign Up</Link>}
           {isLoggedIn && <Link to="/profile" className="hover:text-white">Profile</Link>}
