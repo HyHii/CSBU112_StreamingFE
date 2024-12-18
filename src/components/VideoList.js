@@ -34,12 +34,12 @@ const VideoList = () => {
   //   },
   // ];
 
-  // const fetchStreams1 = async () => {
+  // const fetchStreams = async () => {
   //   setIsLoading(true);
   //   try {
   //     setTimeout(() => {
   //       console.log("Dummy API Response:", dummyStreams);
-  //       setStreams(dummyStreams); // Gán dummy data vào state
+  //       setStreams(dummyStreams);
   //       setIsLoading(false);
   //     }, 1000);
   //   } catch (err) {
@@ -96,6 +96,13 @@ const VideoList = () => {
               key={stream.id}
               className="bg-gray-800 p-4 rounded-lg shadow-lg hover:scale-105 transition-transform"
             >
+              <div className="mb-4">
+                <img
+                  src={"https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMTlrbm05enhrZHM3cmptc3gxazdtNDR6dzZhMWI1MXQ2NnZjZ3ByciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/sthmCnCpfr8M8jtTQy/giphy.webp"}
+                  alt="stream gif"
+                  className="w-full h-32 object-cover rounded-lg"
+                />
+              </div>
               <h3 className="text-xl font-semibold">{stream.title || "No Title"}</h3>
               <p className="text-gray-400">{stream.description || "Không có mô tả."}</p>
               <Link
