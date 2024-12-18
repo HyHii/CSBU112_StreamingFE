@@ -1,53 +1,41 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../components/AuthContext";
+import axios from "axios";
 
 const Login = () => {
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
-  const navigate = useNavigate(); // Sử dụng useNavigate để điều hướng
+  const { login } = useContext(AuthContext); // Dùng AuthContext để gọi login
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(null); // Xóa thông báo lỗi trước đó
-    setSuccessMessage(null); // Xóa thông báo thành công trước đó
+    setError(null);
 
     try {
       const response = await axios.post(
-        'https://csbu-software-design-be.onrender.com/api/account/login',
-        {
-          name: name,
-          password: password,
-        }
+        "https://csbu-software-design-be.onrender.com/api/account/login",
+        { name, password }
       );
-      console.log(response);
       if (response.status === 200) {
-        const token = response.data.data;
-        localStorage.setItem("token", token);
-        localStorage.setItem("name", name);
-        setSuccessMessage('Đăng nhập thành công!');
-        setError(null);
-        setTimeout(() => {
-          navigate('/'); // Chuyển hướng sang trang main
-        }, 1500); // Đợi 1.5 giây trước khi chuyển hướng
-      } else {
-        setError(response.data.error || 'Đã xảy ra lỗi!');
-        setSuccessMessage(null);
+        login(response.data.data, name); // Cập nhật trạng thái đăng nhập ngay lập tức
+        navigate("/"); // Chuyển hướng về trang chính
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'Đã xảy ra lỗi không xác định!');
-      setSuccessMessage(null);
+      setError("Đăng nhập thất bại!");
     }
   };
 
   return (
     <div className="bg-gray-800 min-h-screen flex items-center justify-center">
-      <form className="bg-gray-900 p-6 rounded-lg shadow-md w-80" onSubmit={handleLogin}>
+      <form
+        className="bg-gray-900 p-6 rounded-lg shadow-md w-80"
+        onSubmit={handleLogin}
+      >
         <h2 className="text-lg font-bold text-center text-white mb-4">Login</h2>
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-        {successMessage && <p className="text-green-500 text-sm mb-2">{successMessage}</p>}
 
         <label className="block mb-2 text-sm font-medium text-gray-300">Username:</label>
         <input

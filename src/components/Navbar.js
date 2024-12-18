@@ -1,23 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "./AuthContext"; // Import AuthContext từ AuthProvider
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
-
-  useEffect(() => {
-    // Hàm kiểm tra token
-    const checkToken = () => {
-      const token = localStorage.getItem("token");
-      setIsLoggedIn(!!token);
-    };
-
-    // Lắng nghe sự kiện storage (có thay đổi token)
-    window.addEventListener("storage", checkToken);
-
-    return () => {
-      window.removeEventListener("storage", checkToken);
-    };
-  }, []);
+  const { isLoggedIn, logout } = useContext(AuthContext);
 
   return (
     <nav className="bg-gray-800 p-4">
@@ -31,6 +17,14 @@ const Navbar = () => {
           {!isLoggedIn && <Link to="/login" className="hover:text-white">Login</Link>}
           {!isLoggedIn && <Link to="/signup" className="hover:text-white">Sign Up</Link>}
           {isLoggedIn && <Link to="/profile" className="hover:text-white">Profile</Link>}
+          {isLoggedIn && (
+            <button
+              onClick={logout}
+              className="text-red-500 hover:text-red-700"
+            >
+              Logout
+            </button>
+          )}
         </div>
       </div>
     </nav>
