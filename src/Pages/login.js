@@ -8,6 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const { login } = useContext(AuthContext); // Dùng AuthContext để gọi login
+  const [successMessage, setSuccessMessage] = useState(null);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -20,8 +21,11 @@ const Login = () => {
         { name, password }
       );
       if (response.status === 200) {
+        setSuccessMessage('Đăng ký thành công!');
         login(response.data.data, name); // Cập nhật trạng thái đăng nhập ngay lập tức
-        navigate("/"); // Chuyển hướng về trang chính
+        setTimeout(() => {
+          navigate('/'); // Chuyển hướng sang trang chính
+        }, 1500);
       }
     } catch (err) {
       setError("Đăng nhập thất bại!");
@@ -36,6 +40,7 @@ const Login = () => {
       >
         <h2 className="text-lg font-bold text-center text-white mb-4">Login</h2>
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+        {successMessage && <p className="text-green-500 text-sm">{successMessage}</p>}
 
         <label className="block mb-2 text-sm font-medium text-gray-300">Username:</label>
         <input
