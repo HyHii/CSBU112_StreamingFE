@@ -50,7 +50,6 @@ const StreamPage = () => {
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-2">
           <VideoPlayer
-            // videoSrc={streamData?.streamUrl || ""}
             videoSrc={`https://csbu-software-design-be.onrender.com/api/stream/watch?streamId=${name}`} // URL video HLS
             //videoSrc="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
             autoplay={true}
