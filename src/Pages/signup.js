@@ -20,7 +20,7 @@ const SignUp = () => {
 
     try {
       const response = await axios.post(
-        'https://marmoset-unbiased-logically.ngrok-free.app/api/account/register',
+        `https://csbu-software-design-be.onrender.com/api/account/register`,
         {
           name: name,
           password: password,
