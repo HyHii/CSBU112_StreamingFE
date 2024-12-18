@@ -7,13 +7,55 @@ const VideoList = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // const dummyStreams = [
+  //   {
+  //     id: "1",
+  //     name: "nguyengiahy",
+  //     title: "Stream Liên Minh Huyền Thoại",
+  //     description: "Chơi game vui vẻ cùng anh em.",
+  //   },
+  //   {
+  //     id: "2",
+  //     name: "player123",
+  //     title: "Stream PUBG Mobile",
+  //     description: "Top 1 không khó, cùng theo dõi nhé!",
+  //   },
+  //   {
+  //     id: "3",
+  //     name: "kaygv",
+  //     title: "Stream Valorant",
+  //     description: "Valorant ranked cùng pro team.",
+  //   },
+  //   {
+  //     id: "4",
+  //     name: "streamertest",
+  //     title: "Stream CS:GO",
+  //     description: "Hành động gay cấn, anh em vào xem.",
+  //   },
+  // ];
+
+  // const fetchStreams1 = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     setTimeout(() => {
+  //       console.log("Dummy API Response:", dummyStreams);
+  //       setStreams(dummyStreams); // Gán dummy data vào state
+  //       setIsLoading(false);
+  //     }, 1000);
+  //   } catch (err) {
+  //     console.error("Error fetching streams:", err);
+  //     setError("Không thể tải danh sách stream.");
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const fetchStreams = async () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
 
       const response = await axios.get(
-        "https://marmoset-unbiased-logically.ngrok-free.app/api/stream/streaming",
+        "https://csbu-software-design-be.onrender.com/api/stream/streaming",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -28,10 +70,10 @@ const VideoList = () => {
       } else {
         setStreams([]);
       }
-      setIsLoading(false);
     } catch (err) {
       console.error("Error fetching streams:", err);
       setError("Không thể tải danh sách stream.");
+    } finally {
       setIsLoading(false);
     }
   };
@@ -45,11 +87,10 @@ const VideoList = () => {
       <h2 className="text-2xl font-bold mb-4">Danh Sách Stream Đang Phát</h2>
 
       {isLoading && <p className="text-white">Đang tải danh sách stream...</p>}
-
       {error && <p className="text-red-500">{error}</p>}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {!isLoading && streams.length > 0 ? (
+        {streams.length > 0 ? (
           streams.map((stream) => (
             <div
               key={stream.id}
@@ -58,7 +99,7 @@ const VideoList = () => {
               <h3 className="text-xl font-semibold">{stream.title || "No Title"}</h3>
               <p className="text-gray-400">{stream.description || "Không có mô tả."}</p>
               <Link
-                to={`/streampage?username=${stream.name}`}
+                to={`/streampage?name=${stream.name}`}
                 className="block mt-4 bg-blue-600 text-white px-4 py-2 rounded text-center hover:bg-blue-700"
               >
                 Xem Stream
