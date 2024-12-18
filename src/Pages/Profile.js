@@ -20,16 +20,25 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const name = localStorage.getItem("name"); 
+        const name = localStorage.getItem("name");
         if (!token) {
-          navigate("/");
+          navigate("/login");
           return;
         }
-        const response = await axios.get(`https://marmoset-unbiased-logically.ngrok-free.app/api/account?name=${name}`, {
-          headers: { Authorization: `Bearer ${token}` },
+        const response = await axios.get(
+          `https://csbu-software-design-be.onrender.com/api/account?name=${name}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        console.log("API Response:", response.data); // Debug API response
+
+        setProfile({
+          ...response.data,
+          following: response.data.following || [], // Fallback tránh undefined
+          followingStreamId: response.data.followingStreamId || [],
         });
-        setProfile(response.data);
       } catch (err) {
+        console.error("Error fetching profile:", err);
         setError("Failed to load profile.");
       }
     };
@@ -41,14 +50,16 @@ const Profile = () => {
   const handleUpdate = async () => {
     try {
       const token = localStorage.getItem("token");
+      const name = localStorage.getItem("name");
       await axios.put(
-        `https://marmoset-unbiased-logically.ngrok-free.app/api/account?name=KayGV`,
+        `https://csbu-software-design-be.onrender.com/api/account?name=${name}`,
         { title: profile.title, description: profile.description },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert("Profile updated successfully!");
       setIsEditing(false);
     } catch (err) {
+      console.error("Error updating profile:", err);
       setError("Failed to update profile.");
     }
   };
@@ -56,6 +67,7 @@ const Profile = () => {
   // Xử lý logout
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("name");
     navigate("/login");
   };
 
@@ -65,8 +77,9 @@ const Profile = () => {
       {error && <p className="text-red-500">{error}</p>}
 
       <div className="mb-4">
-        {/* <p><strong>User ID:</strong> {profile.id}</p> */}
-        <p><strong>Username:</strong> {profile.name}</p>
+        <p>
+          <strong>Username:</strong> {profile?.name || "N/A"}
+        </p>
         <p>
           <strong>Title:</strong>
           {isEditing ? (
@@ -77,7 +90,7 @@ const Profile = () => {
               className="bg-gray-700 p-2 rounded ml-2"
             />
           ) : (
-            ` ${profile.title}`
+            ` ${profile.title || "No title"}`
           )}
         </p>
         <p>
@@ -119,10 +132,11 @@ const Profile = () => {
         Logout
       </button>
 
+      {/* Danh sách Following */}
       <div className="mt-6">
         <h3 className="text-lg font-semibold">Following Users:</h3>
         <ul>
-          {profile.following.length > 0 ? (
+          {profile?.following?.length > 0 ? (
             profile.following.map((user, index) => (
               <li key={index} className="text-gray-400">
                 {user}
@@ -134,10 +148,11 @@ const Profile = () => {
         </ul>
       </div>
 
+      {/* Danh sách Following Stream ID */}
       <div className="mt-4">
         <h3 className="text-lg font-semibold">Following Streams:</h3>
         <ul>
-          {profile.followingStreamId.length > 0 ? (
+          {profile?.followingStreamId?.length > 0 ? (
             profile.followingStreamId.map((streamId, index) => (
               <li key={index} className="text-gray-400">
                 Stream ID: {streamId}
