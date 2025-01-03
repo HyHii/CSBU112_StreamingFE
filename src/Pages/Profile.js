@@ -15,6 +15,7 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
 
+  // Fetch dữ liệu Profile từ server
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -30,6 +31,7 @@ const Profile = () => {
         );
 
         console.log("API Response:", response.data); // Debug API response
+
         setProfile({
           ...response.data,
           following: response.data.following || [], // Fallback tránh undefined
