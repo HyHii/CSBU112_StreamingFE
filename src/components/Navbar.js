@@ -1,9 +1,17 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext"; // Import AuthContext từ AuthProvider
 
 const Navbar = () => {
   const { isLoggedIn, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    if (window.location.pathname === "/profile") {
+      navigate("/login"); 
+    }
+  };
 
   return (
     <nav className="bg-gray-800 p-4">
@@ -14,12 +22,24 @@ const Navbar = () => {
           </Link>
         </h1>
         <div className="space-x-4">
-          {!isLoggedIn && <Link to="/login" className="hover:text-white">Login</Link>}
-          {!isLoggedIn && <Link to="/signup" className="hover:text-white">Sign Up</Link>}
-          {isLoggedIn && <Link to="/profile" className="hover:text-white">Profile</Link>}
+          {!isLoggedIn && (
+            <Link to="/login" className="hover:text-white">
+              Login
+            </Link>
+          )}
+          {!isLoggedIn && (
+            <Link to="/signup" className="hover:text-white">
+              Sign Up
+            </Link>
+          )}
+          {isLoggedIn && (
+            <Link to="/profile" className="hover:text-white">
+              Profile
+            </Link>
+          )}
           {isLoggedIn && (
             <button
-              onClick={logout}
+              onClick={handleLogout} // Gọi hàm handleLogout thay vì logout
               className="text-red-500 hover:text-red-700"
             >
               Logout
