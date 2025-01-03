@@ -1,6 +1,8 @@
-import React, { useContext } from "react";
+import React, { useState, useEffect } from "react";
+
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext"; // Import AuthContext từ AuthProvider
+import { useContext } from "react";
 
 const Navbar = () => {
   const { isLoggedIn, logout } = useContext(AuthContext);
