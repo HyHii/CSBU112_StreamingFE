@@ -21,7 +21,7 @@ const Login = () => {
         { name, password }
       );
       if (response.status === 200) {
-        setSuccessMessage('Đăng ký thành công!');
+        setSuccessMessage('Đăng nhập thành công!');
         login(response.data.data, name); // Cập nhật trạng thái đăng nhập ngay lập tức
         setTimeout(() => {
           navigate('/'); // Chuyển hướng sang trang chính
