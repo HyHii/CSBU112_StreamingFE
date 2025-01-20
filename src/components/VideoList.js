@@ -8,30 +8,22 @@ const VideoList = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   // const dummyStreams = [
-  //   {
-  //     id: "1",
-  //     name: "nguyengiahy",
-  //     title: "Stream Liên Minh Huyền Thoại",
-  //     description: "Chơi game vui vẻ cùng anh em.",
-  //   },
-  //   {
-  //     id: "2",
-  //     name: "player123",
-  //     title: "Stream PUBG Mobile",
-  //     description: "Top 1 không khó, cùng theo dõi nhé!",
-  //   },
-  //   {
-  //     id: "3",
-  //     name: "kaygv",
-  //     title: "Stream Valorant",
-  //     description: "Valorant ranked cùng pro team.",
-  //   },
-  //   {
-  //     id: "4",
-  //     name: "streamertest",
-  //     title: "Stream CS:GO",
-  //     description: "Hành động gay cấn, anh em vào xem.",
-  //   },
+  //   { id: "1", name: "nguyengiahy", title: "Stream Liên Minh Huyền Thoại", description: "Chơi game vui vẻ cùng anh em." },
+  //   { id: "2", name: "player123", title: "Stream PUBG Mobile", description: "Top 1 không khó, cùng theo dõi nhé!" },
+  //   { id: "3", name: "kaygv", title: "Stream Valorant", description: "Valorant ranked cùng pro team." },
+  //   { id: "4", name: "streamertest", title: "Stream CS:GO", description: "Hành động gay cấn, anh em vào xem." },
+  //   { id: "5", name: "nguyengiahy", title: "Stream Liên Minh Huyền Thoại", description: "Chơi game vui vẻ cùng anh em." },
+  //   { id: "6", name: "player123", title: "Stream PUBG Mobile", description: "Top 1 không khó, cùng theo dõi nhé!" },
+  //   { id: "7", name: "kaygv", title: "Stream Valorant", description: "Valorant ranked cùng pro team." },
+  //   { id: "8", name: "streamertest", title: "Stream CS:GO", description: "Hành động gay cấn, anh em vào xem." },
+  //   { id: "1", name: "nguyengiahy", title: "Stream Liên Minh Huyền Thoại", description: "Chơi game vui vẻ cùng anh em." },
+  //   { id: "2", name: "player123", title: "Stream PUBG Mobile", description: "Top 1 không khó, cùng theo dõi nhé!" },
+  //   { id: "3", name: "kaygv", title: "Stream Valorant", description: "Valorant ranked cùng pro team." },
+  //   { id: "4", name: "streamertest", title: "Stream CS:GO", description: "Hành động gay cấn, anh em vào xem." },
+  //   { id: "5", name: "nguyengiahy", title: "Stream Liên Minh Huyền Thoại", description: "Chơi game vui vẻ cùng anh em." },
+  //   { id: "6", name: "player123", title: "Stream PUBG Mobile", description: "Top 1 không khó, cùng theo dõi nhé!" },
+  //   { id: "7", name: "kaygv", title: "Stream Valorant", description: "Valorant ranked cùng pro team." },
+  //   { id: "8", name: "streamertest", title: "Stream CS:GO", description: "Hành động gay cấn, anh em vào xem." },
   // ];
 
   // const fetchStreams = async () => {
@@ -89,7 +81,7 @@ const VideoList = () => {
       {isLoading && <p className="text-white">Đang tải danh sách stream...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 gap-y-20 mt-20">
         {streams.length > 0 ? (
           streams.map((stream) => (
             <div
@@ -104,6 +96,7 @@ const VideoList = () => {
                 />
               </div>
               <h3 className="text-xl font-semibold">{stream.title || "No Title"}</h3>
+              <p className="text-l text-gray-300 font-semibold">{stream.name}</p>
               <p className="text-gray-400">{stream.description || "Không có mô tả."}</p>
               <Link
                 to={`/streampage?name=${stream.name}`}
