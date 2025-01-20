@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/AuthContext";
-import axios from "axios";
+import api from "../axiosInstance"; 
 
 const Profile = () => {
   const [profile, setProfile] = useState({
@@ -11,7 +11,7 @@ const Profile = () => {
     description: "",
   });
   const [followerCount, setFollowerCount] = useState(0);
-  const { isLoggedIn } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
@@ -28,22 +28,15 @@ const Profile = () => {
           return;
         }
 
-        const response = await axios.get(
-          `https://csbu-software-design-be.onrender.com/api/account?name=${name}`
-        );
+        const response = await api.get(`/account?name=${name}`);
 
         console.log("Profile API Response:", response.data);
 
         setProfile({ ...response.data });
 
-        const followerResponse = await axios.get(
-          `https://csbu-software-design-be.onrender.com/api/account/auth/follower?name=${name}`,
+        const followerResponse = await api.get(`/account/auth/follower?name=${name}`,
           {
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json",
-              Authorization: `Bearer ${token}`
-            }
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
 
@@ -63,14 +56,14 @@ const Profile = () => {
   // Xử lý cập nhật thông tin
   const handleUpdate = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const name = localStorage.getItem("name");
+      // const token = localStorage.getItem("token");
+      // const name = localStorage.getItem("name");
 
-      await axios.put(
-        `https://csbu-software-design-be.onrender.com/api/account?name=${name}`,
-        { title: profile.title, description: profile.description },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      // await axios.put(
+      //   `https://csbu-software-design-be.onrender.com/api/account?name=${name}`,
+      //   { title: profile.title, description: profile.description },
+      //   { headers: { Authorization: `Bearer ${token}` } }
+      // );
 
       alert("Profile updated successfully!");
       setIsEditing(false);

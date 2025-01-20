@@ -1,25 +1,22 @@
 import axios from "axios";
+import { useContext } from "react";
+import { AuthContext } from "./components/AuthContext";
 
-// Tạo một instance của Axios
-const axiosInstance = axios.create({
-  baseURL: "https://marmoset-unbiased-logically.ngrok-free.app/api", // URL gốc của API
-  headers: {
-    "Content-Type": "application/json",
-  },
+const api = axios.create({
+  baseURL: "https://csbu-software-design-be.onrender.com/api",
 });
 
-// Thêm Interceptor để đính kèm token vào mọi request
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token"); // Lấy token từ localStorage
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`; // Thêm token vào header
-    }
-    return config;
-  },
+// ✅ Interceptor bắt lỗi 401 và tự động đăng xuất
+api.interceptors.response.use(
+  (response) => response,
   (error) => {
+    if (error.response && error.response.status === 401) {
+      console.warn("Token hết hạn, đăng xuất...");
+      const { logout } = useContext(AuthContext);
+      logout(); // Gọi logout để xóa token & chuyển hướng
+    }
     return Promise.reject(error);
   }
 );
 
-export default axiosInstance;
+export default api;

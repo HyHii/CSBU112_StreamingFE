@@ -1,10 +1,12 @@
 import React, { createContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
-  
+  const navigate = useNavigate();
+
   const login = (token, name) => {
     localStorage.setItem("token", token);
     localStorage.setItem("name", name);
@@ -15,6 +17,7 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("name");
     setIsLoggedIn(false);
+    navigate("/login");  // ✅ Tự động chuyển hướng về trang đăng nhập
   };
 
   return (

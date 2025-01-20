@@ -10,8 +10,8 @@ import AuthProvider from "./components/AuthContext"; // Import AuthProvider
 
 const App = () => {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <div className="bg-gray-900 text-white min-h-screen">
           <Navbar />
           <Routes>
@@ -22,8 +22,8 @@ const App = () => {
             <Route path="/profile" element={<UserProfile />} />
           </Routes>
         </div>
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 };
 
