@@ -13,6 +13,7 @@ const Profile = () => {
   const [followerCount, setFollowerCount] = useState(0);
   const [streamKey, setStreamKey] = useState("");
   const [loadingStreamKey, setLoadingStreamKey] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(""); // ✅ Thêm state cho thông báo
   const { logout } = useContext(AuthContext);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -78,8 +79,10 @@ const Profile = () => {
         })
       ]);
 
-      alert("Profile updated successfully!");
+      setSuccessMessage("Profile updated successfully!");
       setIsEditing(false);
+
+      setTimeout(() => setSuccessMessage(""), 2000);
     } catch (err) {
       console.error("Error updating profile:", err);
       setError("Failed to update profile.");
@@ -98,7 +101,9 @@ const Profile = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setStreamKey(streamKeyResponse.data.data);
-      alert("Stream Key updated successfully!");
+
+      setSuccessMessage("Stream Key updated successfully!"); 
+      setTimeout(() => setSuccessMessage(""), 2000);
     } catch (err) {
       console.error("Error updating Stream Key:", err);
       setError("Failed to update Stream Key.");
@@ -108,6 +113,14 @@ const Profile = () => {
   return (
     <div className="bg-gray-900 text-white min-h-screen p-8">
       <h2 className="text-2xl font-bold mb-4">User Profile</h2>
+
+      {/* ✅ Hiển thị thông báo nếu có */}
+      {successMessage && (
+        <div className="bg-green-500 text-white p-2 rounded mb-4">
+          {successMessage}
+        </div>
+      )}
+
       {error && <p className="text-red-500">{error}</p>}
 
       <div className="mb-4">
@@ -147,12 +160,11 @@ const Profile = () => {
           <span className="text-green-400">{streamKey}</span>
         </p>
       </div>
-      <div className="flex space-x-4"> {/* Tạo flexbox và khoảng cách giữa các nút */}
 
+      <div className="flex space-x-4"> {/* Tạo flexbox và khoảng cách giữa các nút */}
         <button
           onClick={updateStreamKey}
           className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
-          
         >
           Cập Nhật Stream Key
         </button> 
