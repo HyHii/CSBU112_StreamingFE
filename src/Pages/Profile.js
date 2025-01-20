@@ -34,15 +34,13 @@ const Profile = () => {
         console.log("Profile API Response:", response.data);
         setProfile({ ...response.data });
 
-        const followerResponse = await api.get(`/account/auth/follower?name=${name}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const followerResponse = await api.get(`/account/auth/follower?name=${name}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
         console.log("Follower API Response:", followerResponse.data);
         const count = parseInt(followerResponse.data.data, 10) || 0;
         setFollowerCount(count);
-
       } catch (err) {
         console.error("Error fetching profile:", err);
         setError("Failed to load profile.");
@@ -52,7 +50,7 @@ const Profile = () => {
     fetchProfile();
   }, [navigate]);
 
-  // Xử lý cập nhật thông tin
+  // Xử lý cập nhật thông tin (Title & Description)
   const handleUpdate = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -62,6 +60,7 @@ const Profile = () => {
         name: name,
         data: profile.title,
       };
+
       const updateDescription = {
         name: name,
         data: profile.description,
@@ -91,9 +90,9 @@ const Profile = () => {
       setLoadingStreamKey(true);
       const token = localStorage.getItem("token");
 
-      const streamKeyResponse = await api.get(`/account/auth/streamkey`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const streamKeyResponse = await api.get(`/account/auth/streamkey`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       console.log("Stream Key API Response:", streamKeyResponse.data);
       setStreamKey(streamKeyResponse.data.data);
@@ -132,9 +131,7 @@ const Profile = () => {
           {isEditing ? (
             <textarea
               value={profile.description || ""}
-              onChange={(e) =>
-                setProfile({ ...profile, description: e.target.value })
-              }
+              onChange={(e) => setProfile({ ...profile, description: e.target.value })}
               className="bg-gray-700 p-2 rounded ml-2 w-full"
             />
           ) : (
@@ -149,7 +146,8 @@ const Profile = () => {
           <span className="text-green-400">{streamKey}</span>
         </p>
       </div>
-      <div className="flex space-x-4"> {/* Tạo flexbox và khoảng cách giữa nút */}
+
+      <div className="flex space-x-4">
         <button
           onClick={fetchStreamKey}
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
