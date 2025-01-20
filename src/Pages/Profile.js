@@ -92,7 +92,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="bg-gray-800 text-white min-h-screen p-8">
+    <div className="bg-gray-900 text-white min-h-screen p-8">
       <h2 className="text-2xl font-bold mb-4">User Profile</h2>
       {error && <p className="text-red-500">{error}</p>}
 
