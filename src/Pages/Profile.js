@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/AuthContext";
-import api from "../axiosInstance"; 
+import api from "../axiosInstance";
 
 const Profile = () => {
   const [profile, setProfile] = useState({
@@ -11,6 +11,8 @@ const Profile = () => {
     description: "",
   });
   const [followerCount, setFollowerCount] = useState(0);
+  const [streamKey, setStreamKey] = useState("");
+  const [loadingStreamKey, setLoadingStreamKey] = useState(false);
   const { logout } = useContext(AuthContext);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -29,9 +31,7 @@ const Profile = () => {
         }
 
         const response = await api.get(`/account?name=${name}`);
-
         console.log("Profile API Response:", response.data);
-
         setProfile({ ...response.data });
 
         const followerResponse = await api.get(`/account/auth/follower?name=${name}`,
@@ -39,11 +39,10 @@ const Profile = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-
         console.log("Follower API Response:", followerResponse.data);
-
         const count = parseInt(followerResponse.data.data, 10) || 0;
         setFollowerCount(count);
+
       } catch (err) {
         console.error("Error fetching profile:", err);
         setError("Failed to load profile.");
@@ -70,6 +69,25 @@ const Profile = () => {
     } catch (err) {
       console.error("Error updating profile:", err);
       setError("Failed to update profile.");
+    }
+  };
+
+  const fetchStreamKey = async () => {
+    try {
+      setLoadingStreamKey(true);
+      const token = localStorage.getItem("token");
+
+      const streamKeyResponse = await api.get(`/account/auth/streamkey`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      console.log("Stream Key API Response:", streamKeyResponse.data);
+      setStreamKey(streamKeyResponse.data.data);
+    } catch (err) {
+      console.error("Error fetching Stream Key:", err);
+      setError("Failed to fetch Stream Key.");
+    } finally {
+      setLoadingStreamKey(false);
     }
   };
 
@@ -112,8 +130,19 @@ const Profile = () => {
         <p>
           <strong>Followers:</strong> {followerCount} người theo dõi
         </p>
-      </div>
 
+        <p>
+          <strong>Stream Key:</strong>{" "}
+          <span className="text-green-400">{streamKey}</span>
+        </p>
+      </div>
+      <button
+        onClick={fetchStreamKey}
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+        disabled={loadingStreamKey}
+      >
+        {loadingStreamKey ? "Đang lấy Stream Key..." : "Lấy Stream Key"}
+      </button>
       {isEditing ? (
         <button
           onClick={handleUpdate}
