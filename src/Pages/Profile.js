@@ -55,14 +55,30 @@ const Profile = () => {
   // Xử lý cập nhật thông tin
   const handleUpdate = async () => {
     try {
-      // const token = localStorage.getItem("token");
-      // const name = localStorage.getItem("name");
+      const token = localStorage.getItem("token");
+      const name = localStorage.getItem("name");
 
-      // await axios.put(
-      //   `https://csbu-software-design-be.onrender.com/api/account?name=${name}`,
-      //   { title: profile.title, description: profile.description },
-      //   { headers: { Authorization: `Bearer ${token}` } }
-      // );
+      const updateData1 = {
+        name: name,
+        data: profile.title,
+      };
+
+      console.log("Sending update request:", updateData1);
+
+      await api.put(`/account/auth/update/title`, updateData1, {
+        headers: { Authorization: `Bearer ${token}`, },
+      });
+
+      const updateData2 = {
+        name: name,
+        data: profile.description,
+      };
+
+      console.log("Sending update request:", updateData2);
+
+      await api.put(`/account/auth/update/description`, updateData2, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       alert("Profile updated successfully!");
       setIsEditing(false);
@@ -130,9 +146,8 @@ const Profile = () => {
         <p>
           <strong>Followers:</strong> {followerCount} người theo dõi
         </p>
-
         <p>
-          <strong>Stream Key:</strong>{" "}
+          <strong>Stream Key: </strong>
           <span className="text-green-400">{streamKey}</span>
         </p>
       </div>
