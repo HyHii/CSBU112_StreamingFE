@@ -27,9 +27,6 @@ const StreamPage = () => {
 
         const response = await axios.get(
           `https://csbu-software-design-be.onrender.com/api/stream/watch?streamId=${name}`, // Truyền `name` vào API  
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
         );
         setStreamData(response.data);
       } catch (err) {
