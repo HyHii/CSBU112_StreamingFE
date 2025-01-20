@@ -94,30 +94,14 @@ const Profile = () => {
       console.log("Updating Stream Key...");
 
       await api.put(`/account/auth/update/streamkey`, {}, { headers: { Authorization: `Bearer ${token}` } });
-
+      const streamKeyResponse = await api.get(`/account/auth/streamkey`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setStreamKey(streamKeyResponse.data.data);
       alert("Stream Key updated successfully!");
     } catch (err) {
       console.error("Error updating Stream Key:", err);
       setError("Failed to update Stream Key.");
-    }
-  };
-
-  const fetchStreamKey = async () => {
-    try {
-      setLoadingStreamKey(true);
-      const token = localStorage.getItem("token");
-
-      const streamKeyResponse = await api.get(`/account/auth/streamkey`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      console.log("Stream Key API Response:", streamKeyResponse.data);
-      setStreamKey(streamKeyResponse.data.data);
-    } catch (err) {
-      console.error("Error fetching Stream Key:", err);
-      setError("Failed to fetch Stream Key.");
-    } finally {
-      setLoadingStreamKey(false);
     }
   };
 
@@ -164,20 +148,14 @@ const Profile = () => {
         </p>
       </div>
       <div className="flex space-x-4"> {/* Tạo flexbox và khoảng cách giữa các nút */}
-        <button
-          onClick={fetchStreamKey}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-          disabled={loadingStreamKey}
-        >
-          {loadingStreamKey ? "Đang lấy Stream Key..." : "Lấy Stream Key"}
-        </button>
 
         <button
           onClick={updateStreamKey}
           className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+          
         >
           Cập Nhật Stream Key
-        </button>
+        </button> 
 
         {isEditing ? (
           <button
