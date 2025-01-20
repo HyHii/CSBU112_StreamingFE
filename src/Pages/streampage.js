@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
+import api from "../axiosInstance";
 import VideoPlayer from "../components/VideoPlayer";
 import StreamerInfo from "../components/StreamInfo";
 import ChatBox from "../components/ChatBox";
@@ -25,8 +25,7 @@ const StreamPage = () => {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await axios.get(
-          `https://csbu-software-design-be.onrender.com/api/stream/watch?streamId=${name}`, // Truyền `name` vào API  
+        const response = await api.get(`/stream/watch?streamId=${name}`, // Truyền `name` vào API  
         );
         setStreamData(response.data);
       } catch (err) {

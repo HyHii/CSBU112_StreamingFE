@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from "../axiosInstance";
 
 const SignUp = () => {
   const [name, setUsername] = useState('');
@@ -19,8 +19,7 @@ const SignUp = () => {
     }
 
     try {
-      const response = await axios.post(
-        `https://csbu-software-design-be.onrender.com/api/account/register`,
+      const response = await api.post(`/account/register`,
         {
           name: name,
           password: password,

@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/AuthContext";
-import axios from "axios";
+import api from "../axiosInstance";
 
 const Login = () => {
   const [name, setName] = useState("");
@@ -16,8 +16,7 @@ const Login = () => {
     setError(null);
 
     try {
-      const response = await axios.post(
-        "https://csbu-software-design-be.onrender.com/api/account/login",
+      const response = await api.post("/account/login",
         { name, password }
       );
       if (response.status === 200) {
