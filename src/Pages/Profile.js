@@ -58,27 +58,25 @@ const Profile = () => {
       const token = localStorage.getItem("token");
       const name = localStorage.getItem("name");
 
-      const updateData1 = {
+      const updateTitle = {
         name: name,
         data: profile.title,
       };
-
-      console.log("Sending update request:", updateData1);
-
-      await api.put(`/account/auth/update/title`, updateData1, {
-        headers: { Authorization: `Bearer ${token}`, },
-      });
-
-      const updateData2 = {
+      const updateDescription = {
         name: name,
         data: profile.description,
       };
 
-      console.log("Sending update request:", updateData2);
+      console.log("Updating profile:", updateTitle, updateDescription);
 
-      await api.put(`/account/auth/update/description`, updateData2, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await Promise.all([
+        api.put(`/account/auth/update/title`, updateTitle, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        api.put(`/account/auth/update/description`, updateDescription, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      ]);
 
       alert("Profile updated successfully!");
       setIsEditing(false);
