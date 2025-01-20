@@ -17,7 +17,7 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("name");
     setIsLoggedIn(false);
-    navigate("/login");  // ✅ Tự động chuyển hướng về trang đăng nhập
+    navigate("/login");
   };
 
   return (
