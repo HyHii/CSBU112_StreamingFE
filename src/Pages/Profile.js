@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../components/AuthContext";
 import axios from "axios";
 
 const Profile = () => {
@@ -8,9 +9,9 @@ const Profile = () => {
     name: "",
     title: "",
     description: "",
-    following: [],
-    followingStreamId: [],
   });
+  const [followerCount, setFollowerCount] = useState(0);
+  const { isLoggedIn } = useContext(AuthContext);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
@@ -21,22 +22,35 @@ const Profile = () => {
       try {
         const token = localStorage.getItem("token");
         const name = localStorage.getItem("name");
+
         if (!token) {
           navigate("/login");
           return;
         }
+
         const response = await axios.get(
-          `https://csbu-software-design-be.onrender.com/api/account?name=${name}`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          `https://csbu-software-design-be.onrender.com/api/account?name=${name}`
         );
 
-        console.log("API Response:", response.data); // Debug API response
+        console.log("Profile API Response:", response.data);
 
-        setProfile({
-          ...response.data,
-          following: response.data.following || [], // Fallback tránh undefined
-          followingStreamId: response.data.followingStreamId || [],
-        });
+        setProfile({ ...response.data });
+
+        const followerResponse = await axios.get(
+          `https://csbu-software-design-be.onrender.com/api/account/auth/follower?name=${name}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        console.log("Follower API Response:", followerResponse.data);
+
+        const count = parseInt(followerResponse.data.data, 10) || 0;
+        setFollowerCount(count);
       } catch (err) {
         console.error("Error fetching profile:", err);
         setError("Failed to load profile.");
@@ -51,11 +65,13 @@ const Profile = () => {
     try {
       const token = localStorage.getItem("token");
       const name = localStorage.getItem("name");
+
       await axios.put(
         `https://csbu-software-design-be.onrender.com/api/account?name=${name}`,
         { title: profile.title, description: profile.description },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+
       alert("Profile updated successfully!");
       setIsEditing(false);
     } catch (err) {
@@ -100,6 +116,9 @@ const Profile = () => {
             ` ${profile.description || "No description"}`
           )}
         </p>
+        <p>
+          <strong>Followers:</strong> {followerCount} người theo dõi
+        </p>
       </div>
 
       {isEditing ? (
@@ -117,38 +136,6 @@ const Profile = () => {
           Edit Profile
         </button>
       )}
-
-      {/* Danh sách Following */}
-      <div className="mt-6">
-        <h3 className="text-lg font-semibold">Following Users:</h3>
-        <ul>
-          {profile?.following?.length > 0 ? (
-            profile.following.map((user, index) => (
-              <li key={index} className="text-gray-400">
-                {user}
-              </li>
-            ))
-          ) : (
-            <li className="text-gray-500">No users followed.</li>
-          )}
-        </ul>
-      </div>
-
-      {/* Danh sách Following Stream ID */}
-      <div className="mt-4">
-        <h3 className="text-lg font-semibold">Following Streams:</h3>
-        <ul>
-          {profile?.followingStreamId?.length > 0 ? (
-            profile.followingStreamId.map((streamId, index) => (
-              <li key={index} className="text-gray-400">
-                Stream ID: {streamId}
-              </li>
-            ))
-          ) : (
-            <li className="text-gray-500">No streams followed.</li>
-          )}
-        </ul>
-      </div>
     </div>
   );
 };
