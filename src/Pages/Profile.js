@@ -41,6 +41,7 @@ const Profile = () => {
         console.log("Follower API Response:", followerResponse.data);
         const count = parseInt(followerResponse.data.data, 10) || 0;
         setFollowerCount(count);
+
       } catch (err) {
         console.error("Error fetching profile:", err);
         setError("Failed to load profile.");
@@ -82,6 +83,22 @@ const Profile = () => {
     } catch (err) {
       console.error("Error updating profile:", err);
       setError("Failed to update profile.");
+    }
+  };
+
+  // Cập nhật Stream Key (Chỉ cần gửi token)
+  const updateStreamKey = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      console.log("Updating Stream Key...");
+
+      await api.put(`/account/auth/update/streamkey`, {}, { headers: { Authorization: `Bearer ${token}` } });
+
+      alert("Stream Key updated successfully!");
+    } catch (err) {
+      console.error("Error updating Stream Key:", err);
+      setError("Failed to update Stream Key.");
     }
   };
 
@@ -146,14 +163,20 @@ const Profile = () => {
           <span className="text-green-400">{streamKey}</span>
         </p>
       </div>
-
-      <div className="flex space-x-4">
+      <div className="flex space-x-4"> {/* Tạo flexbox và khoảng cách giữa các nút */}
         <button
           onClick={fetchStreamKey}
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
           disabled={loadingStreamKey}
         >
           {loadingStreamKey ? "Đang lấy Stream Key..." : "Lấy Stream Key"}
+        </button>
+
+        <button
+          onClick={updateStreamKey}
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+        >
+          Cập Nhật Stream Key
         </button>
 
         {isEditing ? (
