@@ -136,28 +136,31 @@ const Profile = () => {
           <span className="text-green-400">{streamKey}</span>
         </p>
       </div>
-      <button
-        onClick={fetchStreamKey}
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-        disabled={loadingStreamKey}
-      >
-        {loadingStreamKey ? "Đang lấy Stream Key..." : "Lấy Stream Key"}
-      </button>
-      {isEditing ? (
+      <div className="flex space-x-4"> {/* Tạo flexbox và khoảng cách giữa nút */}
         <button
-          onClick={handleUpdate}
-          className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 mr-2"
+          onClick={fetchStreamKey}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+          disabled={loadingStreamKey}
         >
-          Save Changes
+          {loadingStreamKey ? "Đang lấy Stream Key..." : "Lấy Stream Key"}
         </button>
-      ) : (
-        <button
-          onClick={() => setIsEditing(true)}
-          className="bg-yellow-500 px-4 py-2 rounded hover:bg-yellow-600 mr-2"
-        >
-          Edit Profile
-        </button>
-      )}
+
+        {isEditing ? (
+          <button
+            onClick={handleUpdate}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+          >
+            Save Changes
+          </button>
+        ) : (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Edit Profile
+          </button>
+        )}
+      </div>
     </div>
   );
 };
