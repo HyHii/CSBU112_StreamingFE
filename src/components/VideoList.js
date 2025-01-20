@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../axiosInstance";
 import { Link } from "react-router-dom";
 
 const VideoList = () => {
@@ -7,52 +7,13 @@ const VideoList = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // const dummyStreams = [
-  //   { id: "1", name: "nguyengiahy", title: "Stream Liên Minh Huyền Thoại", description: "Chơi game vui vẻ cùng anh em." },
-  //   { id: "2", name: "player123", title: "Stream PUBG Mobile", description: "Top 1 không khó, cùng theo dõi nhé!" },
-  //   { id: "3", name: "kaygv", title: "Stream Valorant", description: "Valorant ranked cùng pro team." },
-  //   { id: "4", name: "streamertest", title: "Stream CS:GO", description: "Hành động gay cấn, anh em vào xem." },
-  //   { id: "5", name: "nguyengiahy", title: "Stream Liên Minh Huyền Thoại", description: "Chơi game vui vẻ cùng anh em." },
-  //   { id: "6", name: "player123", title: "Stream PUBG Mobile", description: "Top 1 không khó, cùng theo dõi nhé!" },
-  //   { id: "7", name: "kaygv", title: "Stream Valorant", description: "Valorant ranked cùng pro team." },
-  //   { id: "8", name: "streamertest", title: "Stream CS:GO", description: "Hành động gay cấn, anh em vào xem." },
-  //   { id: "1", name: "nguyengiahy", title: "Stream Liên Minh Huyền Thoại", description: "Chơi game vui vẻ cùng anh em." },
-  //   { id: "2", name: "player123", title: "Stream PUBG Mobile", description: "Top 1 không khó, cùng theo dõi nhé!" },
-  //   { id: "3", name: "kaygv", title: "Stream Valorant", description: "Valorant ranked cùng pro team." },
-  //   { id: "4", name: "streamertest", title: "Stream CS:GO", description: "Hành động gay cấn, anh em vào xem." },
-  //   { id: "5", name: "nguyengiahy", title: "Stream Liên Minh Huyền Thoại", description: "Chơi game vui vẻ cùng anh em." },
-  //   { id: "6", name: "player123", title: "Stream PUBG Mobile", description: "Top 1 không khó, cùng theo dõi nhé!" },
-  //   { id: "7", name: "kaygv", title: "Stream Valorant", description: "Valorant ranked cùng pro team." },
-  //   { id: "8", name: "streamertest", title: "Stream CS:GO", description: "Hành động gay cấn, anh em vào xem." },
-  // ];
-
-  // const fetchStreams = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     setTimeout(() => {
-  //       console.log("Dummy API Response:", dummyStreams);
-  //       setStreams(dummyStreams);
-  //       setIsLoading(false);
-  //     }, 1000);
-  //   } catch (err) {
-  //     console.error("Error fetching streams:", err);
-  //     setError("Không thể tải danh sách stream.");
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const fetchStreams = async () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
 
-      const response = await axios.get(
-        "https://csbu-software-design-be.onrender.com/api/stream/streaming",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const response = await api.get(
+        "/stream/streaming",
       );
 
       console.log("API Response:", response.data);
