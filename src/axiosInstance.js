@@ -6,7 +6,7 @@ const api = axios.create({
   baseURL: "https://csbu-software-design-be.onrender.com/api",
 });
 
-// ✅ Interceptor bắt lỗi 401 và tự động đăng xuất
+// Interceptor bắt lỗi 401 và tự động đăng xuất
 api.interceptors.response.use(
   (response) => response,
   (error) => {
