@@ -82,7 +82,7 @@ const Profile = () => {
       setSuccessMessage("Profile updated successfully!");
       setIsEditing(false);
 
-      setTimeout(() => setSuccessMessage(""), 2000);
+      setTimeout(() => setSuccessMessage(""), 11000);
     } catch (err) {
       console.error("Error updating profile:", err);
       setError("Failed to update profile.");
@@ -103,7 +103,7 @@ const Profile = () => {
       setStreamKey(streamKeyResponse.data.data);
 
       setSuccessMessage("Stream Key updated successfully!"); 
-      setTimeout(() => setSuccessMessage(""), 2000);
+      setTimeout(() => setSuccessMessage(""), 1000);
     } catch (err) {
       console.error("Error updating Stream Key:", err);
       setError("Failed to update Stream Key.");
