@@ -35,15 +35,8 @@ const StreamPage = () => {
         const profileResponse = await api.get(`/account?name=${name}`);
         console.log("Streamer Profile:", profileResponse.data);
 
-        // Gọi API lấy số lượng followers
-        const followerResponse = await api.get(`/account/auth/follower?name=${name}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        console.log("Follower Data:", followerResponse.data);
-
         setStreamerData({
           ...profileResponse.data,
-          followers: parseInt(followerResponse.data.data, 10) || 0,
         });
 
       } catch (err) {

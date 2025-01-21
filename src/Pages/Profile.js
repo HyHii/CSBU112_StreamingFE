@@ -13,7 +13,6 @@ const Profile = () => {
   const [followerCount, setFollowerCount] = useState(0);
   const [streamKey, setStreamKey] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const { logout } = useContext(AuthContext);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
