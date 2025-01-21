@@ -7,7 +7,7 @@ import ChatBox from "../components/ChatBox";
 
 const StreamPage = () => {
   const [streamData, setStreamData] = useState(null);
-  const [streamerData, setStreamerData] = useState(null); // ✅ Thêm state cho thông tin streamer
+  const [streamerData, setStreamerData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
@@ -43,6 +43,7 @@ const StreamPage = () => {
 
         setStreamerData({
           ...profileResponse.data,
+          followers: parseInt(followerResponse.data.data, 10) || 0,
         });
 
       } catch (err) {
