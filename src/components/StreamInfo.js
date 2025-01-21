@@ -13,18 +13,13 @@ const StreamerInfo = ({ streamerData }) => {
 
   useEffect(() => {
     if (streamerData) {
-      setFollowerCount(streamerData.followers || 0);
+      setFollowerCount(streamerData.followers);
     }
   }, [streamerData]);
 
   const fetchFollowStatus = async () => {
-    if (!streamerData?.id || !token) {
-      console.warn("Không thể fetch follow status - ID hoặc token không hợp lệ.");
-      return;
-    }
-
     try {
-      console.log(`🔹 Fetching follow status for Stream ID: ${streamerData.id}`);
+      console.log(`Fetching follow status for Stream ID: ${streamerData.id}`);
       const response = await api.get(`/account/auth/follower?name=${streamerData.name}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
