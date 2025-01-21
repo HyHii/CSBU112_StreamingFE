@@ -12,8 +12,7 @@ const Profile = () => {
   });
   const [followerCount, setFollowerCount] = useState(0);
   const [streamKey, setStreamKey] = useState("");
-  const [loadingStreamKey, setLoadingStreamKey] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(""); // ✅ Thêm state cho thông báo
+  const [successMessage, setSuccessMessage] = useState("");
   const { logout } = useContext(AuthContext);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -81,7 +80,7 @@ const Profile = () => {
       setSuccessMessage("Profile updated successfully!");
       setIsEditing(false);
 
-      setTimeout(() => setSuccessMessage(""), 11000);
+      setTimeout(() => setSuccessMessage(""), 1000);
     } catch (err) {
       console.error("Error updating profile:", err);
       setError("Failed to update profile.");
