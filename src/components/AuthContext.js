@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
@@ -17,8 +17,16 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("name");
     setIsLoggedIn(false);
-    navigate("/login");
+    navigate("/login"); // Chuyển hướng về trang Login
   };
+
+  useEffect(() => {
+    // Kiểm tra token hết hạn khi app load
+    const token = localStorage.getItem("token");
+    if (!token) {
+      logout();
+    }
+  }, []);
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, login, logout }}>

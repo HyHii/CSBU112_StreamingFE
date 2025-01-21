@@ -1,20 +1,32 @@
 import axios from "axios";
-import { useContext } from "react";
-import { AuthContext } from "./components/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const api = axios.create({
   baseURL: "https://csbu-software-design-be.onrender.com/api",
 });
 
-// Interceptor bắt lỗi 401 và tự động đăng xuất
+// Thêm interceptor để xử lý lỗi token hết hạn
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Nếu phản hồi thành công, trả về response như bình thường
+    return response;
+  },
   (error) => {
-    if (error.response && error.response.status === 401) {
-      console.warn("Token hết hạn, đăng xuất...");
-      const { logout } = useContext(AuthContext);
-      logout(); // Gọi logout để xóa token & chuyển hướng
+    const navigate = useNavigate();
+
+    // Kiểm tra mã lỗi từ server
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      console.error("Token hết hạn hoặc không hợp lệ. Chuyển hướng về Login.");
+      
+      // Xóa token khỏi localStorage
+      localStorage.removeItem("token");
+      localStorage.removeItem("name");
+
+      // Chuyển hướng về trang Login
+      navigate("/login");
     }
+
+    // Tiếp tục ném lỗi để các nơi khác cũng nhận được
     return Promise.reject(error);
   }
 );
