@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 
 const roomId = "12";
 const SOCKET_SERVER_URL = `wss://csbu-software-design-be.onrender.com/chat?roomId=${roomId}`;
-// const SOCKET_SERVER_URL = `ws://localhost:8080`;
 const ChatBox = () => {
   const [user, setUser] = useState("Anonymous"); // State lưu username
   const [messages, setMessages] = useState([]);
@@ -57,7 +56,6 @@ const ChatBox = () => {
         message: input.trim(),
       };
       socketRef.current.send(JSON.stringify(newMessage)); // Gửi tin nhắn qua WebSocket
-        // setMessages((prevMessages) => [...prevMessages, newMessage]); // Cập nhật tin nhắn trong UI
         setInput("");
     } else if (socketRef.current.readyState !== WebSocket.OPEN) {
       setError("Unable to send message. Connection not ready.");
