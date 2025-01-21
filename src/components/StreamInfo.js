@@ -50,7 +50,8 @@ const StreamerInfo = ({ streamerData }) => {
       console.log(`🔹 Gửi yêu cầu follow đến: /account/auth/follow/${streamerData.id}`);
       const response = await api.put(
         `/account/auth/follow/${streamerData.id}`,
-        { name, data: "follow-action" },
+        { name: `${name}`, 
+          data: "follow-action" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
