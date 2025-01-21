@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/AuthContext";
-import StreamerInfo from "../components/StreamInfo";
 import api from "../axiosInstance";
 
 const Profile = () => {
@@ -121,8 +120,6 @@ const Profile = () => {
       )}
 
       {error && <p className="text-red-500">{error}</p>}
-
-      <StreamerInfo profile={profile} />
 
       <div className="mb-4">
         <p>
