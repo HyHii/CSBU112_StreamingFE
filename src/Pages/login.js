@@ -19,6 +19,7 @@ const Login = () => {
       const response = await api.post("/account/login",
         { name, password }
       );
+
       if (response.status === 200) {
         setSuccessMessage('Đăng nhập thành công!');
         login(response.data.data, name); // Cập nhật trạng thái đăng nhập ngay lập tức
