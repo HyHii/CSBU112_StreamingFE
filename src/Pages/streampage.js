@@ -26,14 +26,15 @@ const StreamPage = () => {
       try {
         const token = localStorage.getItem("token");
 
+        // Gọi API lấy thông tin streamer
+        const profileResponse = await api.get(`/account?name=${name}`);
+        console.log("Streamer Profile:", profileResponse.data);
+
         // Gọi API lấy dữ liệu livestream
         const response = await api.get(`/stream/watch?streamId=${name}`);
         setStreamData(response.data);
         console.log("Stream Data:", response.data);
 
-        // Gọi API lấy thông tin streamer
-        const profileResponse = await api.get(`/account?name=${name}`);
-        console.log("Streamer Profile:", profileResponse.data);
 
         setStreamerData({
           ...profileResponse.data,
