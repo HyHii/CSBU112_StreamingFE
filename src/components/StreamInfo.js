@@ -24,7 +24,7 @@ const StreamerInfo = ({ streamerData }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("📊 API Follow Status Response:", response.data);
+      console.log("API Follow Status Response:", response.data);
 
       const isNowFollowing = response.data.data === "1" || response.data.data === 1;
       setIsFollowing(isNowFollowing);
