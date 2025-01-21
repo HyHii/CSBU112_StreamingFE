@@ -39,8 +39,9 @@ const Profile = () => {
 
         const response = await api.get(`/account?name=${name}`);
         setProfile({ ...response.data });
+        // console.log(response.data);
 
-        const followerResponse = await api.get(`/account/auth/follower?name=${name}`, {
+        const followerResponse = await api.get(`/account/auth/follower/${response.data.id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
