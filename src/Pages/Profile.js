@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/AuthContext";
+import StreamerInfo from "../components/StreamInfo";
 import api from "../axiosInstance";
 
 const Profile = () => {
@@ -113,7 +114,6 @@ const Profile = () => {
     <div className="bg-gray-900 text-white min-h-screen p-8">
       <h2 className="text-2xl font-bold mb-4">User Profile</h2>
 
-      {/* ✅ Hiển thị thông báo nếu có */}
       {successMessage && (
         <div className="bg-green-500 text-white p-2 rounded mb-4">
           {successMessage}
@@ -121,6 +121,8 @@ const Profile = () => {
       )}
 
       {error && <p className="text-red-500">{error}</p>}
+
+      <StreamerInfo profile={profile} />
 
       <div className="mb-4">
         <p>
