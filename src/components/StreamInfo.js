@@ -13,8 +13,7 @@ const StreamerInfo = ({ streamerData }) => {
   // Fetch trạng thái follow
   const fetchFollowStatus = async () => {
     try {
-      console.log(`🔹 Fetching follow status for Stream ID: ${streamerData.id}`);
-      const response = await api.get(`/account/auth/follower?name=${streamerData.name}`, {
+      const response = await api.get(`/account/auth/follower/${streamerData.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -28,13 +27,6 @@ const StreamerInfo = ({ streamerData }) => {
     }
   };
 
-  useEffect(() => {
-    if (streamerData) {
-      setFollowerCount(streamerData.followers || 0); // Thiết lập follower ban đầu
-      fetchFollowStatus(); // Fetch trạng thái follow từ API
-    }
-  }, [streamerData]);
-
   const handleFollowToggle = async () => {
     if (!isLoggedIn) {
       alert("Bạn cần đăng nhập để follow!");
@@ -42,7 +34,7 @@ const StreamerInfo = ({ streamerData }) => {
     }
 
     if (!streamerData?.id) {
-      console.warn("⚠️ Không thể follow - streamId không hợp lệ.");
+      console.warn("hông thể follow - streamId không hợp lệ.");
       return;
     }
 
@@ -56,7 +48,7 @@ const StreamerInfo = ({ streamerData }) => {
       );
 
       console.log("Server Response:", response.data);
-      const responsess = await api.get(`/account/auth/follower?name=${streamerData.name}`, {
+      const responsess = await api.get(`/account/auth/follower/${streamerData.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
