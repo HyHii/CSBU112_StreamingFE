@@ -70,14 +70,13 @@ const Profile = () => {
 
       console.log("Updating profile:", updateTitle, updateDescription);
 
-      await Promise.all([
-        api.put(`/account/auth/update/title`, updateTitle, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        api.put(`/account/auth/update/description`, updateDescription, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-      ]);
+      await api.put(`/account/auth/update/title`, updateTitle, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      await api.put(`/account/auth/update/description`, updateDescription, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
 
       setSuccessMessage("Profile updated successfully!");
       setIsEditing(false);
@@ -102,7 +101,7 @@ const Profile = () => {
       });
       setStreamKey(streamKeyResponse.data.data);
 
-      setSuccessMessage("Stream Key updated successfully!"); 
+      setSuccessMessage("Stream Key updated successfully!");
       setTimeout(() => setSuccessMessage(""), 1000);
     } catch (err) {
       console.error("Error updating Stream Key:", err);
@@ -167,7 +166,7 @@ const Profile = () => {
           className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
         >
           Cập Nhật Stream Key
-        </button> 
+        </button>
 
         {isEditing ? (
           <button
