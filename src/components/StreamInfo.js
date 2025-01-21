@@ -1,16 +1,45 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./../styles/StreamInfo.css";
 import api from "../axiosInstance";
+import { AuthContext } from "../components/AuthContext";
 
 const StreamerInfo = ({ streamerData }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [followerCount, setFollowerCount] = useState(streamerData?.followers || 0);
+  const { isLoggedIn } = useContext(AuthContext);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     if (streamerData) {
       setFollowerCount(streamerData.followers);
     }
   }, [streamerData]);
+
+  // Gửi yêu cầu Follow/Unfollow
+  const handleFollowToggle = async () => {
+    try {
+      if (!isLoggedIn) {
+        alert("Bạn cần đăng nhập để follow!");
+        return;
+      }
+
+      const response = await api.put(
+        `/account/auth/follow`,
+        { targetName: streamerData.name },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      console.log("Follow API Response:", response.data);
+
+      // Cập nhật trạng thái Follow
+      setIsFollowing(!isFollowing);
+      setFollowerCount((prev) => (isFollowing ? prev - 1 : prev + 1));
+    } catch (err) {
+      console.error("Error following user:", err);
+    }
+  };
 
   if (!streamerData) {
     return <p className="text-red-500 text-center">Không có dữ liệu streamer!</p>;
@@ -32,10 +61,20 @@ const StreamerInfo = ({ streamerData }) => {
       <div className="mb-2">
         <strong>Followers:</strong> {followerCount || "0"}
       </div>
-      
+
       <div>
         <strong>Notes:</strong>
         <p className="text-gray-300">{streamerData.description || "No additional notes"}</p>
+      </div>
+
+      <div className="flex space-x-4">
+        {/* Nút Follow/Unfollow */}
+        <button
+          className={`follow-btn ${isFollowing ? "following" : ""}`}
+          onClick={handleFollowToggle}
+        >
+          {isFollowing ? "Following" : "Follow"}
+        </button>
       </div>
     </div>
   );
