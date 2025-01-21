@@ -8,6 +8,8 @@ const StreamerInfo = ({ streamerData }) => {
   const [followerCount, setFollowerCount] = useState(0);
   const { isLoggedIn } = useContext(AuthContext);
   const token = localStorage.getItem("token");
+  const name = localStorage.getItem("name");
+
 
   useEffect(() => {
     if (streamerData) {
@@ -27,7 +29,7 @@ const StreamerInfo = ({ streamerData }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("🔹 API Follow Status Response:", response.data);
+      console.log("📊 API Follow Status Response:", response.data);
 
       const isNowFollowing = response.data.data === "1" || response.data.data === 1;
       setIsFollowing(isNowFollowing);
@@ -52,13 +54,13 @@ const StreamerInfo = ({ streamerData }) => {
     }
 
     try {
-      console.log(`🔹 Gửi yêu cầu follow đến: /account/auth/follow/${streamerData.id}`);
-      console.log("🔑 Token từ localStorage:", token);
+      console.log(`Gửi yêu cầu follow đến: /account/auth/follow/${streamerData.id}`);
+      console.log("Token từ localStorage:", token);
 
       const response = await api.put(
         `/account/auth/follow/${streamerData.id}`,
         {
-          "name": "hy",
+          "name": name,
           "data": "follow-action"
         },
         {
