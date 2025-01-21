@@ -7,6 +7,7 @@ import ChatBox from "../components/ChatBox";
 
 const StreamPage = () => {
   const [streamData, setStreamData] = useState(null);
+  const [streamerData, setStreamerData] = useState(null); // ✅ Thêm state cho thông tin streamer
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
@@ -25,9 +26,25 @@ const StreamPage = () => {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await api.get(`/stream/watch?streamId=${name}`, // Truyền `name` vào API  
-        );
+        // Gọi API lấy dữ liệu livestream
+        const response = await api.get(`/stream/watch?streamId=${name}`);
         setStreamData(response.data);
+        console.log("Stream Data:", response.data);
+
+        // Gọi API lấy thông tin streamer
+        const profileResponse = await api.get(`/account?name=${name}`);
+        console.log("Streamer Profile:", profileResponse.data);
+
+        // Gọi API lấy số lượng followers
+        const followerResponse = await api.get(`/account/auth/follower?name=${name}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log("Follower Data:", followerResponse.data);
+
+        setStreamerData({
+          ...profileResponse.data,
+        });
+
       } catch (err) {
         console.error("Error fetching stream data:", err);
         setError("Không thể tải dữ liệu stream.");
@@ -41,16 +58,16 @@ const StreamPage = () => {
 
   if (isLoading) return <div className="text-white p-4">Đang tải stream...</div>;
   if (error) return <div className="text-red-500 p-4">{error}</div>;
+
   return (
     <div className="bg-gray-900 text-white min-h-screen p-4">
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-2">
           <VideoPlayer
-            videoSrc={`https://csbu-software-design-be.onrender.com/api/stream/watch?streamId=${name}`} // URL video HLS
-            //videoSrc="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+            videoSrc={`https://csbu-software-design-be.onrender.com/api/stream/watch?streamId=${name}`}
             autoplay={true}
           />
-          <StreamerInfo streamer={streamData || {}} />
+          <StreamerInfo streamerData={streamerData} />
         </div>
         <ChatBox user={streamData?.name || "Anonymous"} />
       </div>
