@@ -5,30 +5,20 @@ import { AuthContext } from "../components/AuthContext";
 
 const StreamerInfo = ({ streamerData }) => {
   const [isFollowing, setIsFollowing] = useState(false);
-  const [followerCount, setFollowerCount] = useState(streamerData.data);
+  const [followerCount, setFollowerCount] = useState(streamerData.data || 0);
   const { isLoggedIn } = useContext(AuthContext);
   const token = localStorage.getItem("token");
   const name = localStorage.getItem("name");
 
-  // Cập nhật followerCount khi streamerData thay đổi
-  useEffect(() => {
-    console.log(streamerData);
-    if (streamerData?.data !== undefined) {
-      setFollowerCount(streamerData.data);
-    }
-  }, [streamerData]);
-
-  // Fetch trạng thái follow
   const fetchFollowStatus = async () => {
-    console.log(streamerData);
     try {
       const response = await api.get(`/account/follower/${streamerData.id}`);
 
       console.log("API Follow Status Response:", response.data);
 
-      // Kiểm tra trạng thái follow
-      const isNowFollowing = response.data.data !== "0" || response.data.data !== 0;
+      const isNowFollowing = response.data.data !== "0" && response.data.data !== 0;
       setIsFollowing(isNowFollowing);
+      setFollowerCount(parseInt(response.data.data, 10) || 0); // Đồng bộ số followers
     } catch (error) {
       console.error("Error fetching follow status:", error);
     }
@@ -40,7 +30,7 @@ const StreamerInfo = ({ streamerData }) => {
 
   const handleFollowToggle = async () => {
     if (!isLoggedIn) {
-      alert("Bạn cần đăng nhập để follow!");
+      alert("Bạn cần đăng nhập để follow!");  
       return;
     }
 
@@ -58,15 +48,15 @@ const StreamerInfo = ({ streamerData }) => {
       );
 
       console.log("Server Response:", response.data);
-      const responsess = await api.get(`/account/follower/${streamerData.id}`);
-      // Cập nhật trạng thái và số lượng followers từ phản hồi
-      if (response.data === "Followed") {
-        setIsFollowing(true);
-        setFollowerCount((prev) => prev + 1);
-      } else if (response.data === "Unfollowed") {
-        setIsFollowing(false);
-        setFollowerCount((prev) => (prev > 0 ? prev - 1 : 0));
-      }
+
+      // Gọi lại API để cập nhật trạng thái followers
+      const updatedFollowerResponse = await api.get(`/account/follower/${streamerData.id}`);
+      console.log("Updated Follower Data:", updatedFollowerResponse.data);
+
+      const isNowFollowing = updatedFollowerResponse.data.data !== "0" && updatedFollowerResponse.data.data !== 0;
+
+      setIsFollowing(isNowFollowing);
+      setFollowerCount(parseInt(updatedFollowerResponse.data.data, 10) || 0);
     } catch (err) {
       console.error("Error following user:", err);
     }
