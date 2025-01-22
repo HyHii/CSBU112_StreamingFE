@@ -41,9 +41,7 @@ const Profile = () => {
         setProfile({ ...response.data });
         // console.log(response.data);
 
-        const followerResponse = await api.get(`/account/auth/follower/${response.data.id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const followerResponse = await api.get(`/account/follower/${response.data.id}`);
 
         setFollowerCount(parseInt(followerResponse.data.data, 10) || 0);
       } catch (err) {
