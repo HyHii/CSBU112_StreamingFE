@@ -10,6 +10,14 @@ const StreamerInfo = ({ streamerData }) => {
   const token = localStorage.getItem("token");
   const name = localStorage.getItem("name");
 
+  // Cập nhật followerCount khi streamerData thay đổi
+  useEffect(() => {
+    console.log(streamerData);
+    if (streamerData?.data !== undefined) {
+      setFollowerCount(streamerData.data);
+    }
+  }, [streamerData]);
+
   // Fetch trạng thái follow
   const fetchFollowStatus = async () => {
     console.log(streamerData);
@@ -19,7 +27,7 @@ const StreamerInfo = ({ streamerData }) => {
       console.log("API Follow Status Response:", response.data);
 
       // Kiểm tra trạng thái follow
-      const isNowFollowing = response.data.data === "1" || response.data.data === 1;
+      const isNowFollowing = response.data.data !== "0" || response.data.data !== 0;
       setIsFollowing(isNowFollowing);
     } catch (error) {
       console.error("Error fetching follow status:", error);
@@ -50,7 +58,7 @@ const StreamerInfo = ({ streamerData }) => {
       );
 
       console.log("Server Response:", response.data);
-
+      const responsess = await api.get(`/account/follower/${streamerData.id}`);
       // Cập nhật trạng thái và số lượng followers từ phản hồi
       if (response.data === "Followed") {
         setIsFollowing(true);
