@@ -24,8 +24,6 @@ const StreamPage = () => {
 
       setIsLoading(true);
       try {
-        const token = localStorage.getItem("token");
-
         // Gọi API lấy thông tin streamer
         const profileResponse = await api.get(`/account?name=${name}`);
         console.log("Streamer Profile:", profileResponse.data);

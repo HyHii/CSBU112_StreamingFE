@@ -11,7 +11,7 @@ const VideoList = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
-
+      console.log(token);
       const response = await api.get(
         "/stream/streaming",
       );
