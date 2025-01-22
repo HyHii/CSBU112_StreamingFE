@@ -35,11 +35,13 @@ const StreamPage = () => {
         setStreamData(response.data);
         console.log("Stream Data:", response.data);
 
+        const responses = await api.get(`/account/follower/${profileResponse.data.id}`);
+        console.log("Stream Data:", responses.data);
 
         setStreamerData({
           ...profileResponse.data,
+          ...responses.data,
         });
-
       } catch (err) {
         console.error("Error fetching stream data:", err);
         setError("Không thể tải dữ liệu stream.");
@@ -50,7 +52,6 @@ const StreamPage = () => {
 
     fetchStreamData();
   }, [name]);
-
   if (isLoading) return <div className="text-white p-4">Đang tải stream...</div>;
   if (error) return <div className="text-red-500 p-4">{error}</div>;
 

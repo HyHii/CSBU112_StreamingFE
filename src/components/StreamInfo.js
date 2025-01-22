@@ -5,17 +5,16 @@ import { AuthContext } from "../components/AuthContext";
 
 const StreamerInfo = ({ streamerData }) => {
   const [isFollowing, setIsFollowing] = useState(false);
-  const [followerCount, setFollowerCount] = useState(0);
+  const [followerCount, setFollowerCount] = useState(streamerData.data);
   const { isLoggedIn } = useContext(AuthContext);
   const token = localStorage.getItem("token");
   const name = localStorage.getItem("name");
 
   // Fetch trạng thái follow
   const fetchFollowStatus = async () => {
+    console.log(streamerData);
     try {
-      const response = await api.get(`/account/auth/follower/${streamerData.id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await api.get(`/account/follower/${streamerData.id}`);
 
       console.log("API Follow Status Response:", response.data);
 
@@ -27,6 +26,10 @@ const StreamerInfo = ({ streamerData }) => {
     }
   };
 
+  useEffect(() => {
+    fetchFollowStatus();
+  }, [streamerData, token]);
+
   const handleFollowToggle = async () => {
     if (!isLoggedIn) {
       alert("Bạn cần đăng nhập để follow!");
@@ -34,7 +37,7 @@ const StreamerInfo = ({ streamerData }) => {
     }
 
     if (!streamerData?.id) {
-      console.warn("hông thể follow - streamId không hợp lệ.");
+      console.warn("Không thể follow - streamId không hợp lệ.");
       return;
     }
 
@@ -42,24 +45,19 @@ const StreamerInfo = ({ streamerData }) => {
       console.log(`🔹 Gửi yêu cầu follow đến: /account/auth/follow/${streamerData.id}`);
       const response = await api.put(
         `/account/auth/follow/${streamerData.id}`,
-        { name: `${name}`, 
-          data: "follow-action" },
+        { name: `${name}`, data: "follow-action" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       console.log("Server Response:", response.data);
-      const responsess = await api.get(`/account/auth/follower/${streamerData.id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
 
-      console.log("🔹 API Follow Status Response:", responsess.data);
       // Cập nhật trạng thái và số lượng followers từ phản hồi
       if (response.data === "Followed") {
         setIsFollowing(true);
-        setFollowerCount((prev) => prev + 1); // Tăng followers
+        setFollowerCount((prev) => prev + 1);
       } else if (response.data === "Unfollowed") {
         setIsFollowing(false);
-        setFollowerCount((prev) => (prev > 0 ? prev - 1 : 0)); // Giảm followers, không cho số âm
+        setFollowerCount((prev) => (prev > 0 ? prev - 1 : 0));
       }
     } catch (err) {
       console.error("Error following user:", err);
