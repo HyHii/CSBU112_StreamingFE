@@ -36,7 +36,7 @@ const StreamPage = () => {
         console.log("Stream Data:", response.data);
 
         const responses = await api.get(`/account/follower/${profileResponse.data.id}`);
-        console.log("Stream Data:", responses.data);
+        console.log("Stream Follow:", responses.data);
 
         setStreamerData({
           ...profileResponse.data,
