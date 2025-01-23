@@ -15,7 +15,7 @@ const Profile = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const { logout } = useContext(AuthContext); // Thêm hàm logout từ context
+  const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleApiError = (err) => {
