@@ -100,10 +100,10 @@ const VideoList = () => {
       {error && <p className="text-red-500">{error}</p>}
 
       <h3 className="text-xl font-semibold mt-8 mb-2">Đã Follow</h3>
-      {followedStreams.length > 0 ? renderStreamList(followedStreams) : <p className="text-gray-500">Chưa follow streamer nào.</p>}
+      {followedStreams.length > 0 ? renderStreamList(followedStreams) : <p className="text-gray-500">Chưa có stream nào hiện tại.</p>}
 
       <h3 className="text-xl font-semibold mt-8 mb-2">Chưa Follow</h3>
-      {unfollowedStreams.length > 0 ? renderStreamList(unfollowedStreams) : <p className="text-gray-500">Không có stream nào chưa follow.</p>}
+      {unfollowedStreams.length > 0 ? renderStreamList(unfollowedStreams) : <p className="text-gray-500">Chưa có stream nào hiện tại.</p>}
     </div>
   );
 };
