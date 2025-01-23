@@ -21,14 +21,14 @@ const StreamerInfo = ({ streamerData }) => {
   // **Thêm kiểm tra trạng thái follow**
   const fetchFollowStatus = async () => {
     try {
-      const followingResponse = await api.get(`/account/auth/following`, {
+      const followingResponse = await api.get(`/account/auth/isfollowing/${streamerData.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("API Following List:", followingResponse.data.dataArray[0].id);
+      console.log("API Following List:", followingResponse.data);
 
       // Kiểm tra nếu user hiện tại có follow streamer không
-      const isCurrentlyFollowing = (followingResponse.data.dataArray[0].id === streamerData.id);
+      const isCurrentlyFollowing = (followingResponse.data.data === "true");
       setIsFollowing(isCurrentlyFollowing);
     } catch (error) {
       console.error("Error fetching follow status:", error);
