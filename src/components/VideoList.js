@@ -33,20 +33,21 @@ const VideoList = () => {
   const fetchFollowedStreams = async () => {
     try {
       const token = localStorage.getItem("token");
+      const responsess = await api.get(
+        "/stream/streaming",
+      );
       const response = await api.get("/account/auth/following", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(response.data)
-      if (Array.isArray(response.data)) {
-        setFollowedIds(new Set(response.data.map((stream) => stream.id)));
-      }
+      console.log(responsess.data);
+      console.log(response.data);
     } catch (err) {
       console.error("Error fetching followed streams:", err);
     }
   };
 
   useEffect(() => {
-    fetchStreams();
+    fetchStreams(); 
     fetchFollowedStreams();
   }, []);
 
