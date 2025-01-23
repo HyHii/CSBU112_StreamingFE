@@ -37,8 +37,24 @@ const VideoList = () => {
       const followedResponse = await api.get("/account/auth/following", {
         headers: { Authorization: `Bearer ${token}` },
       });
+      
       console.log(streamsResponse.data);
       console.log(followedResponse.data);
+
+      const streamList = streamsResponse.data?.dataArray || [];
+      const followedList = followedResponse.data?.dataArray || [];
+
+      const followedIdSet = new Set(followedList.map((stream) => stream.id));
+      console.log(followedIdSet);
+
+      setFollowedIds(followedIdSet);
+      console.log(followedIdSet);
+
+      const updatedStreams = streamList.map(stream => ({
+        ...stream,
+        isFollowing: followedIdSet.has(stream.id),
+      }));
+      console.log("Updated Streams:", updatedStreams);
     } catch (err) {
       console.error("Error fetching followed streams:", err);
     }
