@@ -7,8 +7,18 @@ const StreamerInfo = ({ streamerData }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [followerCount, setFollowerCount] = useState(streamerData.data || 0);
   const { isLoggedIn } = useContext(AuthContext);
+  const [error, setError] = useState(null);
   const token = localStorage.getItem("token");
   const name = localStorage.getItem("name");
+  const { logout } = useContext(AuthContext);
+
+  const handleApiError = (err) => {
+    if (err.response?.status === 401) {
+      logout();
+    } else {
+      setError("An error occurred. Please try again.");
+    }
+  };
 
   // Cập nhật followerCount khi streamerData thay đổi
   useEffect(() => {
@@ -32,6 +42,7 @@ const StreamerInfo = ({ streamerData }) => {
       setIsFollowing(isCurrentlyFollowing);
     } catch (error) {
       console.error("Error fetching follow status:", error);
+      handleApiError(error);
     }
   };
 
@@ -70,6 +81,7 @@ const StreamerInfo = ({ streamerData }) => {
       setFollowerCount(parseInt(updatedFollowerResponse.data.data, 10) || 0);
     } catch (err) {
       console.error("Error following user:", err);
+      handleApiError(err);
     }
   };
 
