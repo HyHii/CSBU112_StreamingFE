@@ -62,7 +62,7 @@ const StreamerInfo = ({ streamerData }) => {
     }
 
     try {
-      console.log(`🔹 Gửi yêu cầu follow đến: /account/auth/follow/${streamerData.id}`);
+      console.log(`Gửi yêu cầu follow đến: /account/auth/follow/${streamerData.id}`);
       const response = await api.put(
         `/account/auth/follow/${streamerData.id}`,
         { name: `${name}`, data: "follow-action" },
@@ -79,6 +79,11 @@ const StreamerInfo = ({ streamerData }) => {
 
       setIsFollowing(isNowFollowing);
       setFollowerCount(parseInt(updatedFollowerResponse.data.data, 10) || 0);
+      if (!isFollowing) {
+      } else {
+        // Nếu đang unfollow thì reload trang
+        window.location.reload();
+      }
     } catch (err) {
       console.error("Error following user:", err);
       handleApiError(err);
