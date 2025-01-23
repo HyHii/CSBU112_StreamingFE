@@ -33,14 +33,12 @@ const VideoList = () => {
   const fetchFollowedStreams = async () => {
     try {
       const token = localStorage.getItem("token");
-      const responsess = await api.get(
-        "/stream/streaming",
-      );
-      const response = await api.get("/account/auth/following", {
+      const streamsResponse = await api.get("/stream/streaming");
+      const followedResponse = await api.get("/account/auth/following", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(responsess.data);
-      console.log(response.data);
+      console.log(streamsResponse.data);
+      console.log(followedResponse.data);
     } catch (err) {
       console.error("Error fetching followed streams:", err);
     }
