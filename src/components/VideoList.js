@@ -51,7 +51,6 @@ const VideoList = () => {
       console.log(followedIdSet);
 
       setFollowedIds(followedIdSet);
-      console.log(followedIdSet);
 
       const updatedStreams = streamList.map(stream => ({
         ...stream,
@@ -63,10 +62,11 @@ const VideoList = () => {
     }
   };
 
+
   useEffect(() => {
+    document.title = 'Streaming Web - Main Page';
     fetchStreams(); 
-    if (!isLogin){
-      console.log("isLogin:", isLogin);
+    if (isLogin){
       fetchFollowedStreams();
     }
   }, []);

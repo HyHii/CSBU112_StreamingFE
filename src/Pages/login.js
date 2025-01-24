@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/AuthContext";
 import api from "../axiosInstance";
@@ -10,6 +10,10 @@ const Login = () => {
   const { login } = useContext(AuthContext); // Dùng AuthContext để gọi login
   const [successMessage, setSuccessMessage] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = 'Streaming Web - Login';
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();

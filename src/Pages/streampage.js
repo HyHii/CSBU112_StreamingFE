@@ -15,6 +15,9 @@ const StreamPage = () => {
   const name = queryParams.get("name"); // Lấy `name` từ URL
 
   useEffect(() => {
+    document.title = "Streaming Web - " + name;
+
+
     const fetchStreamData = async () => {
       if (!name) {
         setError("Không tìm thấy tên người dùng.");

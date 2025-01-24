@@ -27,6 +27,8 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    document.title = "Streaming Web - Profile";
+
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from "../axiosInstance";
 
@@ -9,6 +9,10 @@ const SignUp = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const navigate = useNavigate(); // Sử dụng useNavigate để điều hướng
+
+  useEffect(() => {
+    document.title = 'Streaming Web - Signup';
+  }, []);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
