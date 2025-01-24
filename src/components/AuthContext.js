@@ -20,13 +20,13 @@ const AuthProvider = ({ children }) => {
     navigate("/login"); // Chuyển hướng về trang Login
   };
 
-  useEffect(() => {
-    // Kiểm tra token hết hạn khi app load
-    const token = localStorage.getItem("token");
-    if (!token) {
-      logout();
-    }
-  }, []);
+  // useEffect(() => {
+  //   // Kiểm tra token hết hạn khi app load
+  //   const token = localStorage.getItem("token");
+  //   if (!token) {
+  //     logout();
+  //   }
+  // }, []);
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
