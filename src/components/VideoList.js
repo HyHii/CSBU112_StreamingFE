@@ -2,17 +2,13 @@ import React, { useState, useEffect } from "react";
 import api from "../axiosInstance";
 import { Link } from "react-router-dom";
 
-function checkLogin(){
-  const token = localStorage.getItem("token");
-  return !!token;
-}
 
 const VideoList = () => {
   const [streams, setStreams] = useState([]);
   const [followedIds, setFollowedIds] = useState(new Set());
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLogin, setIsLogin] = useState(checkLogin == null ? false : true);
+  const [isLogin, setIsLogin] = useState(!!localStorage.getItem("token"));
 
   const fetchStreams = async () => {
     setIsLoading(true);
@@ -109,7 +105,7 @@ const VideoList = () => {
       {isLoading && <p className="text-white">Đang tải danh sách stream...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
-      {!isLogin && (
+      {isLogin && (
         <>
           <h3 className="text-xl font-semibold mt-8 mb-2">Đã Follow</h3>
           {followedStreams.length > 0 
@@ -119,7 +115,7 @@ const VideoList = () => {
         </>
       )}
 
-      <h3 className="text-xl font-semibold mt-8 mb-2">{!isLogin ? "Chưa Follow" : "Đang Stream"}</h3>
+      <h3 className="text-xl font-semibold mt-8 mb-2">{isLogin ? "Chưa Follow" : "Đang Stream"}</h3>
       {unfollowedStreams.length > 0 ? renderStreamList(unfollowedStreams) : <p className="text-gray-500">Chưa có stream nào hiện tại.</p>}
     </div>
   );
