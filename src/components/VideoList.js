@@ -109,7 +109,7 @@ const VideoList = () => {
       {isLoading && <p className="text-white">Đang tải danh sách stream...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
-      {isLogin && (
+      {!isLogin && (
         <>
           <h3 className="text-xl font-semibold mt-8 mb-2">Đã Follow</h3>
           {followedStreams.length > 0 
@@ -119,7 +119,7 @@ const VideoList = () => {
         </>
       )}
 
-      <h3 className="text-xl font-semibold mt-8 mb-2">Chưa Follow</h3>
+      <h3 className="text-xl font-semibold mt-8 mb-2">{!isLogin ? "Chưa Follow" : "Đang Stream"}</h3>
       {unfollowedStreams.length > 0 ? renderStreamList(unfollowedStreams) : <p className="text-gray-500">Chưa có stream nào hiện tại.</p>}
     </div>
   );
