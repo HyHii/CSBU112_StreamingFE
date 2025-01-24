@@ -30,6 +30,7 @@ const StreamerInfo = ({ streamerData }) => {
 
   // **Thêm kiểm tra trạng thái follow**
   const fetchFollowStatus = async () => {
+    if(!isLoggedIn) return;
     try {
       const followingResponse = await api.get(`/account/auth/isfollowing/${streamerData.id}`, {
         headers: { Authorization: `Bearer ${token}` },
